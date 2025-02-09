@@ -1,0 +1,18 @@
+## Title: |c7c42f2Imp|ceeeeee-proved PvP UI|r
+## AddOnVersion: 1010001
+## APIVersion: 101044
+## Author: |c7c42f2@impda|r [EU]
+## DependsOn: LibMainMenu-2.0 LibAddonMenu-2.0 LibCustomMenu
+## OptionalDependsOn: LibDebugLogger PerfectPixel
+## SavedVariables: IMP_PVP_UI_SV
+
+logger.lua
+
+beautifulCampaignsBrowser/bindings.lua
+beautifulCampaignsBrowser/bindings.xml
+beautifulCampaignsBrowser/controls.xml
+beautifulCampaignsBrowser/main.lua
+
+settings.lua
+
+main.lua
