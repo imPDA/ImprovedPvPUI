@@ -1,0 +1,49 @@
+name: Create Release Draft
+
+on:
+  push:
+    tags:
+      - '^\d+\.\d+\.\d+([a-z]*\d+)?$'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up environment
+      id: setup
+      run: |
+        # Define the source and destination directories
+        SOURCE_DIR="."
+        DEST_DIR="release_files"
+        ARCHIVE_NAME="${{ github.ref }}.zip"
+
+        mkdir -p $DEST_DIR
+        rsync -av --exclude='.git/' --exclude='.github/' --exclude='README.md' --exclude='.gitignore' $SOURCE_DIR/ $DEST_DIR/
+        zip -r $ARCHIVE_NAME $DEST_DIR
+
+        echo "archive_name=$ARCHIVE_NAME" >> $GITHUB_OUTPUT
+
+    - name: Create Release Draft
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: true
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ steps.setup.outputs.archive_name }}
+        asset_name: ${{ steps.setup.outputs.archive_name }}
+        asset_content_type: application/zip
