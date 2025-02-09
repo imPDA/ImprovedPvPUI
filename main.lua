@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '0.1.0b1'
+addon.version = '1.0.0'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
