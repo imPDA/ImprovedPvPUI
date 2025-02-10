@@ -16,12 +16,11 @@ jobs:
     - name: Set up environment
       id: setup
       run: |
-        # Define the source and destination directories
         SOURCE_DIR="."
-        DEST_DIR="release_files"
+        DEST_DIR="ImprovedPvPUI"
         ARCHIVE_NAME="${{ github.ref_name }}.zip"
 
-        mkdir -p $DEST_DIR
+        # mkdir -p $DEST_DIR
         rsync -av --exclude='.git/' --exclude='.github/' --exclude='README.md' --exclude='.gitignore' $SOURCE_DIR/ $DEST_DIR/
         zip -r $ARCHIVE_NAME $DEST_DIR
 
