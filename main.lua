@@ -1,14 +1,24 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.0.0'
+addon.version = '1.1.0'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
+
+local LKT = LibKeepTooltip
 
 local DEFAULTS = {
 	beautifulCampaignsManager = {
 		enabled = false,
 	},
+	keepTooltip = {
+		enabled = false,
+		siegeTimer = false,
+		resourcesLevels = false,
+		continuousUpdate = false,
+		guildOwner = true,
+		hideResourceGuildOwner = false,
+	}
 }
 
 function addon:OnLoad()
@@ -20,6 +30,38 @@ function addon:OnLoad()
 
 	if sv.beautifulCampaignsManager.enabled then
 		IMP_BCB_Initialize(sv.beautifulCampaignsManager)
+	end
+
+	if sv.keepTooltip.enabled then
+		Log('Keep tooltip enabled')
+		IMP_KT_Initialize()
+
+		if sv.keepTooltip.siegeTimer then
+			Log('Siege timer enabled')
+			IMP_KT_SiegeTimer_Initialize()
+		end
+
+		if sv.keepTooltip.resourcesLevels then
+			Log('Resources levels enabled')
+			IMP_KT_ResourcesLevels_Initialize()
+		end
+
+		if sv.keepTooltip.continuousUpdate then
+			Log('Continuous update enabled')
+			IMP_KT_EnableContinuousTooltipUpdate()
+		end
+
+		if sv.keepTooltip.guildOwner then
+			if sv.keepTooltip.hideResourceGuildOwner then
+				local OldAddGuildOwnerLine = LKT:GetIngridientCallback(LKT.INGRIDIENTS.GUILD_OWNER)
+				LKT:ReplaceIngridient(LKT.INGRIDIENTS.GUILD_OWNER, function(tooltip)
+					if tooltip.keepType == KEEPTYPE_RESOURCE then return end
+					OldAddGuildOwnerLine(tooltip)
+				end)
+			end
+		else
+			LKT:ReplaceIngridient(LKT.INGRIDIENTS.GUILD_OWNER, function() end)
+		end
 	end
 end
 

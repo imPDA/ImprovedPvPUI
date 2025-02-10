@@ -34,6 +34,56 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                 },
             },
         },
+        {
+            type = 'submenu',
+            name = 'Keep Tooltip',
+            -- tooltip = 'To go Cyrodiil or Imperial City',
+            controls = {
+                {
+                    type = 'checkbox',
+                    name = 'Enable',
+                    getFunc = function() return sv.keepTooltip.enabled end,
+                    setFunc = function(value) sv.keepTooltip.enabled = value end,
+                    requiresReload = true,
+                },
+                {
+                    type = 'checkbox',
+                    name = 'Add siege timer',
+                    getFunc = function() return sv.keepTooltip.siegeTimer end,
+                    setFunc = function(value) sv.keepTooltip.siegeTimer = value end,
+                    requiresReload = true,
+                },
+                {
+                    type = 'checkbox',
+                    name = 'Add resources levels',
+                    getFunc = function() return sv.keepTooltip.resourcesLevels end,
+                    setFunc = function(value) sv.keepTooltip.resourcesLevels = value end,
+                    requiresReload = true,
+                },
+                {
+                    type = 'checkbox',
+                    name = 'Update tooltip once per second',
+                    getFunc = function() return sv.keepTooltip.continuousUpdate end,
+                    setFunc = function(value) sv.keepTooltip.continuousUpdate = value end,
+                    requiresReload = true,
+                    tooltip = 'By default, tooltip updated only on MouseIn and MouseOut, enables update every second while mouse over any keep',
+                },
+                {
+                    type = 'checkbox',
+                    name = 'Show guild owner',
+                    getFunc = function() return sv.keepTooltip.guildOwner end,
+                    setFunc = function(value) sv.keepTooltip.guildOwner = value end,
+                    requiresReload = true,
+                },
+                {
+                    type = 'checkbox',
+                    name = 'Hide resource guild owner',
+                    getFunc = function() return sv.keepTooltip.hideResourceGuildOwner end,
+                    setFunc = function(value) sv.keepTooltip.hideResourceGuildOwner = value end,
+                    requiresReload = true,
+                },
+            },
+        },
     }
 
     LAM:RegisterOptionControls(settingsName, optionsData)

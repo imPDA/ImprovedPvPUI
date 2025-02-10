@@ -438,14 +438,30 @@ local function RebuildCampaignData()
         campaignData.selectionIndex = selectionIndex
         campaignData.rulesetId = rulesetId
         campaignData.rulesetType = GetCampaignRulesetType(rulesetId)
+        campaignData.rulesetName = GetCampaignRulesetName(rulesetId)
+        campaignData.queueWaitSeconds = GetSelectionCampaignQueueWaitTime(selectionIndex)
 
         campaignData.alliancePopulation1 = GetSelectionCampaignPopulationData(selectionIndex, 1)
         campaignData.alliancePopulation2 = GetSelectionCampaignPopulationData(selectionIndex, 2)
         campaignData.alliancePopulation3 = GetSelectionCampaignPopulationData(selectionIndex, 3)
 
+        local alliances = {}
+        for i = 1, 3 do
+           table.insert(alliances, {
+                -- underdog = underdog == ALLIANCE_ALDMERI_DOMINION,
+                underpop = IsUnderpopBonusEnabled(campaignId, i),
+                score = GetSelectionCampaignAllianceScore(selectionIndex, i),
+                potential = GetCampaignAlliancePotentialScore(campaignId, i),
+                population = GetSelectionCampaignPopulationData(selectionIndex, 1),
+            })
+        end
+        campaignData.alliances = alliances
+
         campaignData.numGroupMembers = GetNumSelectionCampaignGroupMembers(selectionIndex)
         campaignData.numFriends = GetNumSelectionCampaignFriends(selectionIndex)
         campaignData.numGuildMembers = GetNumSelectionCampaignGuildMembers(selectionIndex)
+
+        campaignData.earnedTier = GetPlayerCampaignRewardTierInfo(campaignId)
 
         campaignData.canBeAllianceLocked = CanCampaignBeAllianceLocked(campaignId)
         campaignData.lockedToAlliance = GetSelectionCampaignCurrentAllianceLock(selectionIndex)
@@ -454,7 +470,7 @@ local function RebuildCampaignData()
 
         campaignData.isImperialCityCampaign = IsImperialCityCampaign(campaignId)
 
-        if campaignId ~= 104 or showIcereach then
+        if campaignId ~= 104 or showIcereach then  -- TODO: move to the top
             table.insert(campaignDataList, campaignData)
         end
     end
