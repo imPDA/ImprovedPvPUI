@@ -48,6 +48,13 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                 },
                 {
                     type = 'checkbox',
+                    name = 'Add tracker',
+                    getFunc = function() return sv.keepTooltip.tracker end,
+                    setFunc = function(value) sv.keepTooltip.tracker = value end,
+                    requiresReload = true,
+                },
+                {
+                    type = 'checkbox',
                     name = 'Add siege timer',
                     getFunc = function() return sv.keepTooltip.siegeTimer end,
                     setFunc = function(value) sv.keepTooltip.siegeTimer = value end,
