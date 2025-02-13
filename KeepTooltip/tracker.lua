@@ -111,11 +111,16 @@ local function OnKeepUnderAttack(_, keepId, battlegroundContext, underAttack)
     if ownerAllianceId == 0 then return end
 
     local keepBuffer = siegeBuffer[keepId]
+    if not keepBuffer then
+        Log('! There is no %s in buffer', GetKeepName(keepId))
+        siegeBuffer[keepId] = {}
+        keepBuffer = siegeBuffer[keepId]
+        keepBuffer[BEFORE] = {ownerAllianceId, nil}
+    end
 
     if underAttack then
         keepBuffer[BEFORE] = {ownerAllianceId, timestamp}
     else
-        if not keepBuffer then return end
         keepBuffer[AFTER] = {ownerAllianceId, timestamp}
         if GetKeepType(keepId) == KEEPTYPE_RESOURCE then
             keepBuffer[LAST_SIEGE_STRING] = GetLastSiegeStringForResource(keepId)
@@ -144,10 +149,13 @@ local function ChangeReceipes()
 end
 
 local function OnPlayerActivated(_, initial)
+    Log('Player activated')
+
     if not IsInAvAZone() then return end
     local currentCampaignId = GetCurrentCampaignId()
 
     if initial or campaignId ~= currentCampaignId then
+        Log('Recreating the table')
         ZO_ClearTable(siegeBuffer)
 
         campaignId = currentCampaignId
@@ -158,7 +166,7 @@ local function OnPlayerActivated(_, initial)
             if IsLocalBattlegroundContext(battlegroundContext) then
                 local allianceId = GetKeepAlliance(keepId, battlegroundContext)
                 siegeBuffer[keepId] = {}
-                siegeBuffer[keepId][ALLIANCE] = {allianceId, nil}
+                siegeBuffer[keepId][BEFORE] = {allianceId, nil}
             end
         end
     else
@@ -189,3 +197,5 @@ function IMP_KT_EnableTracker()
     ChangeReceipes()
     EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
 end
+
+IMP_KT_siegeBuffer = siegeBuffer

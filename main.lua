@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.2.0'
+addon.version = '1.3.0'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -19,6 +19,9 @@ local DEFAULTS = {
 		guildOwner = true,
 		hideResourceGuildOwner = false,
 		tracker = false,
+	},
+	battleVictories = {
+		compact = false,
 	}
 }
 
@@ -67,6 +70,10 @@ function addon:OnLoad()
 		if sv.keepTooltip.tracker then
 			IMP_KT_EnableTracker()
 		end
+	end
+
+	if sv.battleVictories.compact then
+		IMP_BV_InitializeCompactTooltip()
 	end
 end
 

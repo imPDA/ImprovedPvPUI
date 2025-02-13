@@ -91,6 +91,20 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                 },
             },
         },
+        {
+            type = 'submenu',
+            name = 'Battle Victories',
+            tooltip = 'Customize Battle Victories (crossed swords on map, also known as kill locations)',
+            controls = {
+                {
+                    type = 'checkbox',
+                    name = 'Compact',
+                    getFunc = function() return sv.battleVictories.compact end,
+                    setFunc = function(value) sv.battleVictories.compact = value end,
+                    requiresReload = true,
+                },
+            },
+        },
     }
 
     LAM:RegisterOptionControls(settingsName, optionsData)
