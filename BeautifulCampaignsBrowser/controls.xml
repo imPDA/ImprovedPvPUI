@@ -83,35 +83,37 @@
                     <Anchor point="TOPLEFT" relativeTo="$(parent)Name" relativePoint="BOTTOMLEFT" offsetY="-2" />
                 </Label>
                 
-                <Texture name="$(parent)ADPopulationIcon" tier="MEDIUM" textureFile="EsoUI/Art/Campaign/campaignBrowser_lowPop.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_ALDMERI_DOMINION">
-                    <Dimensions x="36" y="36" />
+                <Control name="$(parent)Population">
                     <Anchor point="TOPLEFT" offsetX="676" offsetY="12" />
-                </Texture>
-                <Texture name="$(parent)ADIcon" tier="MEDIUM" textureFile="EsoUI/Art/CharacterWindow/allianceBadge_aldmeri.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_ALDMERI_DOMINION">
-                    <Dimensions x="24" y="48" />
-                    <Anchor point="RIGHT" relativeTo="$(parent)ADPopulationIcon" relativePoint="LEFT" />
-                </Texture>
-                <!-- <Label name="$(parent)ADInfo" tier="HIGH" font="ZoFontHeader" text="-/-/-/-" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_ALDMERI_DOMINION">
-                    <Anchor point="TOPLEFT" relativeTo="$(parent)ADIcon" relativePoint="BOTTOMLEFT" offsetY="-2" />
-                </Label> -->
+                    <Controls>
+                        <Texture name="$(parent)ADPopulationIcon" tier="MEDIUM" textureFile="EsoUI/Art/Campaign/campaignBrowser_lowPop.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_ALDMERI_DOMINION">
+                            <Dimensions x="36" y="36" />
+                            <Anchor point="TOPLEFT" />
+                        </Texture>
+                        <Texture name="$(parent)ADIcon" tier="MEDIUM" textureFile="EsoUI/Art/CharacterWindow/allianceBadge_aldmeri.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_ALDMERI_DOMINION">
+                            <Dimensions x="24" y="48" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)ADPopulationIcon" relativePoint="LEFT" />
+                        </Texture>
 
-                <Texture name="$(parent)EPPopulationIcon" tier="MEDIUM" textureFile="EsoUI/Art/Campaign/campaignBrowser_lowPop.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_EBONHEART_PACT">
-                    <Dimensions x="36" y="36" />
-                    <Anchor point="TOPLEFT" offsetX="756" offsetY="12" />
-                </Texture>
-                <Texture name="$(parent)EPIcon" tier="MEDIUM" textureFile="EsoUI/Art/CharacterWindow/allianceBadge_ebonheart.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_EBONHEART_PACT">
-                    <Dimensions x="24" y="48" />
-                    <Anchor point="RIGHT" relativeTo="$(parent)EPPopulationIcon" relativePoint="LEFT" />
-                </Texture>
+                        <Texture name="$(parent)EPPopulationIcon" tier="MEDIUM" textureFile="EsoUI/Art/Campaign/campaignBrowser_lowPop.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_EBONHEART_PACT">
+                            <Dimensions x="36" y="36" />
+                            <Anchor point="TOPLEFT" relativeTo="$(parent)ADPopulationIcon" offsetX="80" />
+                        </Texture>
+                        <Texture name="$(parent)EPIcon" tier="MEDIUM" textureFile="EsoUI/Art/CharacterWindow/allianceBadge_ebonheart.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_EBONHEART_PACT">
+                            <Dimensions x="24" y="48" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)EPPopulationIcon" relativePoint="LEFT" />
+                        </Texture>
 
-                <Texture name="$(parent)DCPopulationIcon" tier="MEDIUM" textureFile="EsoUI/Art/Campaign/campaignBrowser_lowPop.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_DAGGERFALL_COVENANT">
-                    <Dimensions x="36" y="36" />
-                    <Anchor point="TOPLEFT" offsetX="836" offsetY="12" />
-                </Texture>
-                <Texture name="$(parent)DCIcon" tier="MEDIUM" textureFile="EsoUI/Art/CharacterWindow/allianceBadge_daggerfall.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_DAGGERFALL_COVENANT">
-                    <Dimensions x="24" y="48" />
-                    <Anchor point="RIGHT" relativeTo="$(parent)DCPopulationIcon" relativePoint="LEFT" />
-                </Texture>
+                        <Texture name="$(parent)DCPopulationIcon" tier="MEDIUM" textureFile="EsoUI/Art/Campaign/campaignBrowser_lowPop.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_DAGGERFALL_COVENANT">
+                            <Dimensions x="36" y="36" />
+                            <Anchor point="TOPLEFT" relativeTo="$(parent)EPPopulationIcon"  offsetX="80" />
+                        </Texture>
+                        <Texture name="$(parent)DCIcon" tier="MEDIUM" textureFile="EsoUI/Art/CharacterWindow/allianceBadge_daggerfall.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_DAGGERFALL_COVENANT">
+                            <Dimensions x="24" y="48" />
+                            <Anchor point="RIGHT" relativeTo="$(parent)DCPopulationIcon" relativePoint="LEFT" />
+                        </Texture>
+                    </Controls>
+                </Control>
 
                 <Control name="$(parent)SomeInfo" inherits="IMP_BCB_SomeInfoTemplate">
                 </Control>
@@ -146,6 +148,8 @@
                         </Control>
                     </Controls>
                 </Control>
+
+                <Tooltip name="$(parent)CampaignDescriptionTooltip" tier="HIGH" inherits="ZO_BaseTooltip" headerVerticalOffset="11" />
             </Controls>
         </TopLevelControl>
     </Controls>

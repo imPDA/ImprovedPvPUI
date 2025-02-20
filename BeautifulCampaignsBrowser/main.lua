@@ -52,6 +52,7 @@ local index = 0
 
 local topControl = IMP_beautifulCampaignsBrowser
 local campaignsContainer = topControl:GetNamedChild('Subwindow'):GetNamedChild('Campaigns')
+local tooltip = topControl:GetNamedChild('CampaignDescriptionTooltip')
 
 local function ClearPanels()
     for i, control in ipairs(campaignControls) do
@@ -106,6 +107,52 @@ local function GetCampaignControlByCampaignId(campaignId)
     return campaignDataIndex and campaignsContainer:GetChild(2 + campaignDataIndex)
 end
 
+local function IsNoCP(campaignId)
+    if campaignId == 103 then return true end
+    if campaignId == 111 then return true end
+    if campaignId == 116 then return true end
+    if campaignId == 96 then return true end
+end
+
+local function IsNoCP2(rulesetId)
+    if rulesetId == 22 then return true end  -- No-CP Cyro
+    if rulesetId == 18 then return true end  -- No-CP 7 day Cyro
+    if rulesetId == 24 then return true end  -- No-CP IC
+end
+
+local function ShowTooltip(control)
+    local campaignId = control.campaignId
+    if not campaignId then return end
+
+    local rulesetId = GetCampaignRulesetId(campaignId)
+    local isNoCP = IsNoCP2(rulesetId)
+
+    tooltip:SetAnchor(RIGHT, control, LEFT, -40)
+
+    -- tooltip:AddLine(text, font, r, g, b, lineAnchor, modifyTextType, textAlignment, setToFullSize, minWidth)
+    -- AddHeaderLine(text, font, headerRow, headerSide, r, g, b)
+
+    local r, g, b = ZO_TOOLTIP_DEFAULT_COLOR:UnpackRGB()
+    -- tooltip:AddHeaderLine(GetCampaignName(campaignId), 'ZoFontWinH2', 1, THS_LEFT, r, g, b)
+    tooltip:AddLine(GetCampaignName(campaignId), 'ZoFontWinH2', r, g, b, LABEL_LINE_ANCHOR_BASELINE, MODIFY_TEXT_TYPE_NONE, TEXT_ALIGN_CENTER)
+
+    ZO_Tooltip_AddDivider(tooltip)
+
+    tooltip:AddLine(isNoCP and 'noCP' or 'CP', 'ZoFontGameLargeBold', 0, 1, 0)
+    tooltip:AddLine(GetCampaignRulesetDescription(rulesetId), 'ZoFontWinH4', r, g, b)
+
+    tooltip:SetHidden(false)
+
+    -- Log('Tooltip shown')
+end
+
+local function HideTooltip()
+    tooltip:SetHidden(true)
+    tooltip:ClearLines()
+
+    -- Log('Tooltip hidden')
+end
+
 local function OnCampaignQueueChanged(_, campaignId)
     local campaignData = GetCampaignData(campaignId)
     if not campaignData then return end
@@ -126,8 +173,14 @@ local function OnCampaignQueueChanged(_, campaignId)
         --     background:SetDesaturation(0)
         end
 
-        background:SetHandler('OnMouseEnter', function(ctrl) ctrl:SetDesaturation(0) end)
-        background:SetHandler('OnMouseExit', function(ctrl) ctrl:SetDesaturation(0.6) end)
+        background:SetHandler('OnMouseEnter', function(ctrl)
+            ctrl:SetDesaturation(0)
+            ShowTooltip(control)
+        end)
+        background:SetHandler('OnMouseExit', function(ctrl)
+            ctrl:SetDesaturation(0.6)
+            HideTooltip()
+        end)
 
         control:GetNamedChild('Backdrop'):SetEdgeColor(0, 55/255, 0)
 
@@ -137,8 +190,8 @@ local function OnCampaignQueueChanged(_, campaignId)
     else
         background:SetDesaturation(1)
 
-        background:SetHandler('OnMouseEnter', nil)
-        background:SetHandler('OnMouseExit', nil)
+        background:SetHandler('OnMouseEnter', function(ctrl) ShowTooltip(control) end)
+        background:SetHandler('OnMouseExit', function(ctrl) HideTooltip() end)
         background:SetHandler('OnMouseDoubleClick', nil)
 
         control:GetNamedChild('Backdrop'):SetEdgeColor(99/255, 0, 0)
@@ -279,11 +332,21 @@ local function RefreshCampaignPanels()
         local campaignId = campaignData.id
 
         local control = GetControl()
+        control.campaignId = campaignId
 
         control:SetHeight(campaignHeightPx)
         control:SetWidth(totalWidth)
 
-        control:GetNamedChild('Name'):SetText(campaignData.name)
+        local nameControl = control:GetNamedChild('Name')
+        nameControl:SetText(campaignData.name)
+        if numCampaigns > 9 and not PP then
+            local isValid, point, relativeTo, relativePoint, offsetX, offsetY = nameControl:GetAnchor()
+            if isValid then
+                nameControl:SetAnchor(point, relativeTo, relativePoint, 5, 4)
+                nameControl:SetFont('ZoFontHeader2')
+                control:GetNamedChild('Details'):SetFont('$(BOLD_FONT)|$(KB_14)|soft-shadow-thick')
+            end
+        end
 
         local background = control:GetNamedChild('BG')
         if campaignData.isImperialCityCampaign then
@@ -330,9 +393,16 @@ local function RefreshCampaignPanels()
         end
         ]]
 
-        control:GetNamedChild('ADPopulationIcon'):SetTexture(ZO_CampaignBrowser_GetPopulationIcon(campaignData.alliancePopulation1))
-        control:GetNamedChild('EPPopulationIcon'):SetTexture(ZO_CampaignBrowser_GetPopulationIcon(campaignData.alliancePopulation2))
-        control:GetNamedChild('DCPopulationIcon'):SetTexture(ZO_CampaignBrowser_GetPopulationIcon(campaignData.alliancePopulation3))
+        local populationControl = control:GetNamedChild('Population')
+        populationControl:GetNamedChild('ADPopulationIcon'):SetTexture(ZO_CampaignBrowser_GetPopulationIcon(campaignData.alliancePopulation1))
+        populationControl:GetNamedChild('EPPopulationIcon'):SetTexture(ZO_CampaignBrowser_GetPopulationIcon(campaignData.alliancePopulation2))
+        populationControl:GetNamedChild('DCPopulationIcon'):SetTexture(ZO_CampaignBrowser_GetPopulationIcon(campaignData.alliancePopulation3))
+        if numCampaigns > 9 and not PP then
+            local isValid, point, relativeTo, relativePoint, offsetX, offsetY = populationControl:GetAnchor()
+            if isValid then
+                populationControl:SetAnchor(point, relativeTo, relativePoint, offsetX, 4)
+            end
+        end
 
         -- local attachTo = control:GetNamedChild('BackgroundIcons')
         local attachTo = control:GetNamedChild('Name')
@@ -487,7 +557,7 @@ local function RebuildCampaignData()
     local LIST = {
         105, 106, 111, 112, 122, -- Cyro Mayhem
         102, 101, 103, 104, -- Cyro
-        116, 119,  -- IC Mayhem
+        119, 116,  -- IC Mayhem
         95, 96  -- IC
     }
 
@@ -582,6 +652,8 @@ function IMP_BCB_Initialize(settigns)
         else
             EditScene(BEAUTIFUL_CAMPAIGNS_BROWSER_SCENE, topControl)
         end
+
+        PP.SetStyle_Tooltip(tooltip)
     end
 
     if PP then
