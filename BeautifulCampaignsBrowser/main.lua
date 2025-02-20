@@ -89,6 +89,7 @@ local function GetPreviousControl()
 end
 
 local campaignDataList = {}
+IMP_BCB_CAMPAIGNS_DATA_LIST = campaignDataList
 local function GetCampaignData(campaignId)
     for i, campaignData in ipairs(campaignDataList) do
         if campaignData.id == campaignId then return campaignData end
@@ -470,14 +471,24 @@ local function RebuildCampaignData()
 
         campaignData.isImperialCityCampaign = IsImperialCityCampaign(campaignId)
 
-        if campaignId ~= 104 or showIcereach then  -- TODO: move to the top
+        if (campaignId ~= 104 and campaignId ~= 122) or showIcereach then  -- TODO: move to the top
             table.insert(campaignDataList, campaignData)
         end
     end
 
+    -- 105 - Evergloam (7-day standard, Mayhem)
+    -- 106 - Ashpit (7-day standard, Mayhem)
+    -- 111 - Quagmire (7-day no-CP, Mayhem)
+    -- 112 - Field of Regret (7-day no-CP, Mayhem)
+    -- 116 - Legion Zero (no-CP IC, Mayhem)
+    -- 119 - Dragonfire (IC, Mayhem)
+    -- 122 - Coldharbour (below 50, Mayhem)
+
     local LIST = {
-        102, 101, 103, 104,
-        95, 96
+        105, 106, 111, 112, 122, -- Cyro Mayhem
+        102, 101, 103, 104, -- Cyro
+        116, 119,  -- IC Mayhem
+        95, 96  -- IC
     }
 
     local function getIndex(s, l)
@@ -494,6 +505,8 @@ local function RebuildCampaignData()
 
         if value1 == home then return true end
         if value2 == home then return false end
+
+        Log('Comparing %d and %d', value1, value2)
 
         return getIndex(value1, LIST) < getIndex(value2, LIST)
     end
