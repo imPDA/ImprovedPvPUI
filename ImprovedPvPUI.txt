@@ -1,5 +1,5 @@
 ## Title: |c7c42f2Imp|ceeeeee-proved PvP UI|r
-## AddOnVersion: 1140000
+## AddOnVersion: 1141000
 ## APIVersion: 101044
 ## Author: |c7c42f2@impda|r [EU]
 ## DependsOn: LibMainMenu-2.0 LibAddonMenu-2.0 LibCustomMenu LibKeepTooltip

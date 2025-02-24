@@ -1,6 +1,7 @@
 local Log = IMP_PVP_UI_Logger('IMP_BCB')
-local PPEnabled = false
 local showIcereach = false
+local showTooltip = false
+-- TODO: conteinerize and unify creation of campaign overview and get rid of these local variables
 
 local LOADING_SCREEN_CYRODIIL = 'esoui/art/loadingscreens/loadscreen_cyrodiil_01.dds'
 local LOADING_SCREEN_IMPERIAL_CITY = 'esoui/art/loadingscreens/loadscreen_imperialcity_01.dds'
@@ -118,6 +119,7 @@ local function IsNoCP2(rulesetId)
     if rulesetId == 22 then return true end  -- No-CP Cyro
     if rulesetId == 18 then return true end  -- No-CP 7 day Cyro
     if rulesetId == 24 then return true end  -- No-CP IC
+    if rulesetId == 15 then return true end  -- Below 50
 end
 
 local function ShowTooltip(control)
@@ -139,7 +141,15 @@ local function ShowTooltip(control)
     ZO_Tooltip_AddDivider(tooltip)
 
     tooltip:AddLine(isNoCP and 'noCP' or 'CP', 'ZoFontGameLargeBold', 0, 1, 0)
-    tooltip:AddLine(GetCampaignRulesetDescription(rulesetId), 'ZoFontWinH4', r, g, b)
+    tooltip:AddLine(GetCampaignRulesetDescription(rulesetId), 'ZoFontWinH4', r, g, b, nil, nil, TEXT_ALIGN_CENTER)
+
+    if rulesetId == 15 then
+        if GetUnitLevel('player') < 50 then
+            tooltip:AddLine('Below 50 (can join)', 'ZoFontGameLargeBold', 0, 1, 0)
+        else
+            tooltip:AddLine('Below 50 (can\'t join)', 'ZoFontGameLargeBold', 1, 0, 0)
+        end
+    end
 
     tooltip:SetHidden(false)
 
@@ -175,11 +185,9 @@ local function OnCampaignQueueChanged(_, campaignId)
 
         background:SetHandler('OnMouseEnter', function(ctrl)
             ctrl:SetDesaturation(0)
-            ShowTooltip(control)
         end)
         background:SetHandler('OnMouseExit', function(ctrl)
             ctrl:SetDesaturation(0.6)
-            HideTooltip()
         end)
 
         control:GetNamedChild('Backdrop'):SetEdgeColor(0, 55/255, 0)
@@ -190,11 +198,16 @@ local function OnCampaignQueueChanged(_, campaignId)
     else
         background:SetDesaturation(1)
 
-        background:SetHandler('OnMouseEnter', function(ctrl) ShowTooltip(control) end)
-        background:SetHandler('OnMouseExit', function(ctrl) HideTooltip() end)
+        background:SetHandler('OnMouseEnter', nil)
+        background:SetHandler('OnMouseExit', nil)
         background:SetHandler('OnMouseDoubleClick', nil)
 
         control:GetNamedChild('Backdrop'):SetEdgeColor(99/255, 0, 0)
+    end
+
+    if showTooltip then
+        ZO_PostHookHandler(background, 'OnMouseEnter', function() ShowTooltip(control) end)
+        ZO_PostHookHandler(background, 'OnMouseExit', function() HideTooltip() end)
     end
 
     if canQueueSolo then
@@ -271,6 +284,9 @@ local function OnCampaignLeaderboardDataChanged(_, campaignId, allianceId)
     end
 end
 
+local GAP_PX = 8
+local ELEMENT_WIDTH = 850
+
 local function RefreshCampaignPanels()
     ClearPanels()
 
@@ -287,9 +303,6 @@ local function RefreshCampaignPanels()
             numCyrodiilCampaigns = numCyrodiilCampaigns + 1
         end
     end
-
-    local GAP_PX = 8
-    local ELEMENT_WIDTH = 850
 
     local function NewPavedContainer(imageWidth, imageHeight, horizontalStartP, verticalStartP, elementWidth, elementHeight, numElements, gapHeight)
         local sumHeight = elementHeight * numElements + gapHeight * (numElements - 1)
@@ -319,11 +332,13 @@ local function RefreshCampaignPanels()
         self.bottom = self.top + self.step
     end
 
+    if numCampaigns > 9 then
+        GAP_PX = 4
+    end
+
     local totalHeight = campaignsContainer:GetHeight()
     local totalWidth = campaignsContainer:GetWidth()
     local campaignHeightPx = zo_round((totalHeight - (numCampaigns - 1) * GAP_PX) / numCampaigns)
-
-    -- local horizontalShift = PPEnabled and 0.30 or 0.10
 
     local cyrodiilPavedContainer = NewPavedContainer(LOADING_SCREEN_WIDTH, LOADING_SCREEN_HEIGHT, 0, 0, ELEMENT_WIDTH, campaignHeightPx, numCyrodiilCampaigns, GAP_PX)
     local imperialCityPavedContainer = NewPavedContainer(LOADING_SCREEN_WIDTH, LOADING_SCREEN_HEIGHT, 0, 0, ELEMENT_WIDTH, campaignHeightPx, numImperialCityCampaigns, GAP_PX)
@@ -342,10 +357,15 @@ local function RefreshCampaignPanels()
         if numCampaigns > 9 and not PP then
             local isValid, point, relativeTo, relativePoint, offsetX, offsetY = nameControl:GetAnchor()
             if isValid then
-                nameControl:SetAnchor(point, relativeTo, relativePoint, 5, 4)
+                nameControl:SetAnchor(point, relativeTo, relativePoint, 5, 1)
                 nameControl:SetFont('ZoFontHeader2')
                 control:GetNamedChild('Details'):SetFont('$(BOLD_FONT)|$(KB_14)|soft-shadow-thick')
             end
+        end
+
+        if numCampaigns > 9 then
+            control:GetNamedChild('Backdrop'):SetAnchor(TOPLEFT, nil, nil, -1, -1)
+            control:GetNamedChild('Backdrop'):SetAnchor(BOTTOMRIGHT, nil, nil, 1, 1)
         end
 
         local background = control:GetNamedChild('BG')
@@ -400,7 +420,7 @@ local function RefreshCampaignPanels()
         if numCampaigns > 9 and not PP then
             local isValid, point, relativeTo, relativePoint, offsetX, offsetY = populationControl:GetAnchor()
             if isValid then
-                populationControl:SetAnchor(point, relativeTo, relativePoint, offsetX, 4)
+                populationControl:SetAnchor(point, relativeTo, relativePoint, offsetX, 2)
             end
         end
 
@@ -658,12 +678,12 @@ function IMP_BCB_Initialize(settigns)
 
     if PP then
         Log('PP detected')
-        PPEnabled = true
         -- ZO_PostHook(PP, 'allianceWarSceneGroup', MakeItPerfect)
         MakeItPerfect()
     end
 
     showIcereach = GetUnitLevel('player') < 50 or settigns.showIcereach
+    showTooltip = settigns.showTooltip
     -- function CampaignBrowser:OnCampaignQueueStateUpdated(campaignData)
     --     self:CheckForConfirmingQueues()
     --     self:RefreshFilters()

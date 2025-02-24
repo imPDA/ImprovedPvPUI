@@ -32,6 +32,13 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                     requiresReload = true,
                     tooltip = 'Icereach is "below 50" campaign and will be hidden for characters level 50 and above. Turn ON to show it all the time insted.'
                 },
+                {
+                    type = 'checkbox',
+                    name = 'Show tooltip',
+                    getFunc = function() return sv.beautifulCampaignsManager.showTooltip end,
+                    setFunc = function(value) sv.beautifulCampaignsManager.showTooltip = value end,
+                    requiresReload = true,
+                },
             },
         },
         {

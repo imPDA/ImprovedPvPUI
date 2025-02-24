@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.4.0'
+addon.version = '1.4.1'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -10,6 +10,8 @@ local LKT = LibKeepTooltip
 local DEFAULTS = {
 	beautifulCampaignsManager = {
 		enabled = false,
+		showIcereach = false,
+		showTooltip = false,
 	},
 	keepTooltip = {
 		enabled = false,
