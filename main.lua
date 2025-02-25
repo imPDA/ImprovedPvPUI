@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.4.1'
+addon.version = '1.5.0'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -12,6 +12,8 @@ local DEFAULTS = {
 		enabled = false,
 		showIcereach = false,
 		showTooltip = false,
+		showBonuses = false,
+		autotransfer = false,
 	},
 	keepTooltip = {
 		enabled = false,

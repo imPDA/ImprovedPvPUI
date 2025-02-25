@@ -15,7 +15,7 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
         {
             type = 'submenu',
             name = 'Beautiful Campaigns Manager',
-            tooltip = 'To go Cyrodiil or Imperial City',
+            tooltip = 'COME AND FIGHT!',
             controls = {
                 {
                     type = 'checkbox',
@@ -37,6 +37,20 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                     name = 'Show tooltip',
                     getFunc = function() return sv.beautifulCampaignsManager.showTooltip end,
                     setFunc = function(value) sv.beautifulCampaignsManager.showTooltip = value end,
+                    requiresReload = true,
+                },
+                {
+                    type = 'checkbox',
+                    name = '[EXPERIMENTAL] Show bonuses',
+                    getFunc = function() return sv.beautifulCampaignsManager.showBonuses end,
+                    setFunc = function(value) sv.beautifulCampaignsManager.showBonuses = value end,
+                    requiresReload = true,
+                },
+                {
+                    type = 'checkbox',
+                    name = '[EXPERIMENTAL] Autotransfer',
+                    getFunc = function() return sv.beautifulCampaignsManager.autotransfer end,
+                    setFunc = function(value) sv.beautifulCampaignsManager.autotransfer = value end,
                     requiresReload = true,
                 },
             },

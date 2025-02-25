@@ -57,6 +57,20 @@
             </Controls>
         </Control>
 
+        <Control name="IMP_BCB_BonusesTemplate" hidden="true" virtual="true">
+            <Dimensions x="48" y="24" />
+            <Controls>
+                <Texture name="$(parent)LowPopulation" tier="MEDIUM" textureFile="esoui/art/ava/overview_icon_underdog_population.dds">
+                    <Dimensions x="24" y="24" />
+                    <Anchor point="TOPLEFT" />
+                </Texture>
+                <Texture name="$(parent)LowScore" tier="MEDIUM" textureFile="esoui/art/ava/overview_icon_underdog_score.dds">
+                    <Dimensions x="24" y="24" />
+                    <Anchor point="TOPLEFT" relativeTo="$(parent)LowPopulation" relativePoint="TOPRIGHT" />
+                </Texture>
+            </Controls>
+        </Control>
+
         <Control name="IMP_BCB_CampaignOverviewTemplate" virtual="true">
             <Dimensions x="890" y="95" />
             <Controls>
@@ -70,9 +84,9 @@
                     <AnchorFill />
                     <!-- <TextureCoords left="0" right="1" top="0.4" bottom="0.6626"/> -->
                 </Texture>
-                <Control name="$(parent)BackgroundIcons">
+                <!-- <Control name="$(parent)BackgroundIcons">
                     <AnchorFill />
-                </Control>
+                </Control> -->
                 <Label name="$(parent)Name" tier="HIGH" font="ZoFontHeader3" modifyTextType="UPPERCASE" text="Campaign Name">
                     <Anchor point="TOPLEFT" offsetX="15" offsetY="12" />
                 </Label>
@@ -94,6 +108,9 @@
                             <Dimensions x="24" y="48" />
                             <Anchor point="RIGHT" relativeTo="$(parent)ADPopulationIcon" relativePoint="LEFT" />
                         </Texture>
+                        <Control name="$(parent)ADBonuses" inherits="IMP_BCB_BonusesTemplate">
+                            <Anchor point="TOPLEFT" relativeTo="$(parent)ADIcon" relativePoint="BOTTOMLEFT" offsetY="-8" />
+                        </Control>
 
                         <Texture name="$(parent)EPPopulationIcon" tier="MEDIUM" textureFile="EsoUI/Art/Campaign/campaignBrowser_lowPop.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_EBONHEART_PACT">
                             <Dimensions x="36" y="36" />
@@ -103,6 +120,9 @@
                             <Dimensions x="24" y="48" />
                             <Anchor point="RIGHT" relativeTo="$(parent)EPPopulationIcon" relativePoint="LEFT" />
                         </Texture>
+                        <Control name="$(parent)EPBonuses" inherits="IMP_BCB_BonusesTemplate">
+                            <Anchor point="TOPLEFT" relativeTo="$(parent)EPIcon" relativePoint="BOTTOMLEFT" offsetY="-8" />
+                        </Control>
 
                         <Texture name="$(parent)DCPopulationIcon" tier="MEDIUM" textureFile="EsoUI/Art/Campaign/campaignBrowser_lowPop.dds" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_DAGGERFALL_COVENANT">
                             <Dimensions x="36" y="36" />
@@ -112,6 +132,9 @@
                             <Dimensions x="24" y="48" />
                             <Anchor point="RIGHT" relativeTo="$(parent)DCPopulationIcon" relativePoint="LEFT" />
                         </Texture>
+                        <Control name="$(parent)DCBonuses" inherits="IMP_BCB_BonusesTemplate">
+                            <Anchor point="TOPLEFT" relativeTo="$(parent)DCIcon" relativePoint="BOTTOMLEFT" offsetY="-8" />
+                        </Control>
                     </Controls>
                 </Control>
 

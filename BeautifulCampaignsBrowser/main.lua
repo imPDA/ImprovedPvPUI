@@ -1,7 +1,13 @@
 local Log = IMP_PVP_UI_Logger('IMP_BCB')
 local showIcereach = false
 local showTooltip = false
--- TODO: conteinerize and unify creation of campaign overview and get rid of these local variables
+local showBonuses = false
+
+local autoTransfer = false
+local destination
+local transferCampaign
+
+-- TODO: conteinerize and unify creation of campaign overview and get rid of these^ local variables
 
 local LOADING_SCREEN_CYRODIIL = 'esoui/art/loadingscreens/loadscreen_cyrodiil_01.dds'
 local LOADING_SCREEN_IMPERIAL_CITY = 'esoui/art/loadingscreens/loadscreen_imperialcity_01.dds'
@@ -63,6 +69,17 @@ local function ClearPanels()
         local details = control:GetNamedChild('Details')
         details:SetHidden(true)
         control:GetNamedChild('SomeInfo'):SetHidden(true)
+
+        local bonusesControls = {
+            control:GetNamedChild('Population'):GetNamedChild('DCBonuses'),
+            control:GetNamedChild('Population'):GetNamedChild('EPBonuses'),
+            control:GetNamedChild('Population'):GetNamedChild('ADBonuses'),
+        }
+        for _, bonusesControl in ipairs(bonusesControls) do
+            for child = 1, bonusesControl:GetNumChildren() do
+                bonusesControl:GetChild(child):SetHidden(true)
+            end
+        end
     end
     campaignsContainer:GetNamedChild('HomeCampaignIcon'):SetHidden(true)
     campaignsContainer:GetNamedChild('AllianceLockIcon'):SetHidden(true)
@@ -176,7 +193,7 @@ local function OnCampaignQueueChanged(_, campaignId)
 
     local background = control:GetNamedChild('BG')
     local canQueueSolo, canQueueGroup = CAMPAIGN_BROWSER_MANAGER:CanQueueForCampaign(campaignData)
-    if canQueueSolo or campaignData.isQueued then
+    if canQueueSolo or campaignData.isQueued or autoTransfer then
         if WINDOW_MANAGER:GetMouseOverControl() ~= background then  -- TODO: refactor, this check should not exist
             background:SetDesaturation(0.6)
         -- else
@@ -192,7 +209,7 @@ local function OnCampaignQueueChanged(_, campaignId)
 
         control:GetNamedChild('Backdrop'):SetEdgeColor(0, 55/255, 0)
 
-        if campaignData.isQueued then
+        if campaignData.isQueued or campaignData == destination then
             control:GetNamedChild('Backdrop'):SetEdgeColor(99/255, 99/255, 0)
         end
     else
@@ -200,7 +217,7 @@ local function OnCampaignQueueChanged(_, campaignId)
 
         background:SetHandler('OnMouseEnter', nil)
         background:SetHandler('OnMouseExit', nil)
-        background:SetHandler('OnMouseDoubleClick', nil)
+        -- background:SetHandler('OnMouseDoubleClick', nil)
 
         control:GetNamedChild('Backdrop'):SetEdgeColor(99/255, 0, 0)
     end
@@ -210,12 +227,53 @@ local function OnCampaignQueueChanged(_, campaignId)
         ZO_PostHookHandler(background, 'OnMouseExit', function() HideTooltip() end)
     end
 
+    --[[
     if canQueueSolo then
         background:SetHandler('OnMouseDoubleClick', function(ctrl, button)
             if button ~= MOUSE_BUTTON_INDEX_LEFT then return end
             CAMPAIGN_BROWSER_MANAGER:DoQueueForCampaign(campaignData)
         end)
     end
+    ]]
+    local function QueueTransferCampaign()
+        local queuedTo
+        local lowestPopulationCampaign
+        local playerAlliance = GetUnitAlliance('player')
+
+        if not transferCampaign then
+            local lowestPopulation = CAMPAIGN_POP_FULL + 1
+            for _, campaignData_ in ipairs(campaignDataList) do
+                local canTransfer = CAMPAIGN_BROWSER_MANAGER:CanQueueForCampaign(campaignData_)
+                local population = campaignData_.alliances[playerAlliance].population
+
+                Log('%s: %d', campaignData_.name, population + 1)
+                if canTransfer and (population < lowestPopulation) then
+                    lowestPopulation = population
+                    lowestPopulationCampaign = campaignData_
+                end
+
+                if campaignData_.isQueued then
+                    queuedTo = campaignData_
+                end
+            end
+        end
+
+        transferCampaign = queuedTo or lowestPopulationCampaign
+
+        CAMPAIGN_BROWSER_MANAGER:DoQueueForCampaign(transferCampaign)
+        OnCampaignQueueChanged(nil, destination.id)  -- have to do it manually
+    end
+
+    background:SetHandler('OnMouseDoubleClick', function(ctrl, button)
+        if button ~= MOUSE_BUTTON_INDEX_LEFT then return end
+        if canQueueSolo then
+            CAMPAIGN_BROWSER_MANAGER:DoQueueForCampaign(campaignData)
+        elseif autoTransfer then
+            Log('Transfer')
+            destination = campaignData
+            QueueTransferCampaign()
+        end
+    end)
 
     local details = control:GetNamedChild('Details')
     if campaignData.isQueued then
@@ -231,6 +289,9 @@ local function OnCampaignQueueChanged(_, campaignId)
                 ConfirmCampaignEntry(campaignId, false, true)
             end)
         end
+    elseif campaignData == destination and autoTransfer then
+        details:SetText(('Will queue here automatically after %s!'):format(transferCampaign.name))
+        details:SetHidden(false)
     else
         details:SetText('')
         details:SetHidden(true)
@@ -424,6 +485,29 @@ local function RefreshCampaignPanels()
             end
         end
 
+        if showBonuses then
+            local allianceToBonusesControl = {
+                [1] = 'ADBonuses',
+                [2] = 'EPBonuses',
+                [3] = 'DCBonuses',
+            }
+            if not campaignData.isImperialCityCampaign then
+                for alliance = 1, 3 do
+                    local bonusesControl = control:GetNamedChild('Population'):GetNamedChild(allianceToBonusesControl[alliance])
+
+                    if campaignData.alliances[alliance].underdog then
+                        bonusesControl:SetHidden(false)
+                        bonusesControl:GetNamedChild('LowScore'):SetHidden(false)
+                    end
+
+                    if campaignData.alliances[alliance].underpop then
+                        bonusesControl:SetHidden(false)
+                        bonusesControl:GetNamedChild('LowPopulation'):SetHidden(false)
+                    end
+                end
+            end
+        end
+
         -- local attachTo = control:GetNamedChild('BackgroundIcons')
         local attachTo = control:GetNamedChild('Name')
         local attachAnchor = RIGHT
@@ -536,14 +620,16 @@ local function RebuildCampaignData()
         campaignData.alliancePopulation2 = GetSelectionCampaignPopulationData(selectionIndex, 2)
         campaignData.alliancePopulation3 = GetSelectionCampaignPopulationData(selectionIndex, 3)
 
+        local underdogLeaderAlliance = GetCampaignUnderdogLeaderAlliance(campaignId)
+
         local alliances = {}
         for i = 1, 3 do
            table.insert(alliances, {
-                -- underdog = underdog == ALLIANCE_ALDMERI_DOMINION,
+                underdog = underdogLeaderAlliance == i,
                 underpop = IsUnderpopBonusEnabled(campaignId, i),
                 score = GetSelectionCampaignAllianceScore(selectionIndex, i),
                 potential = GetCampaignAlliancePotentialScore(campaignId, i),
-                population = GetSelectionCampaignPopulationData(selectionIndex, 1),
+                population = GetSelectionCampaignPopulationData(selectionIndex, i),
             })
         end
         campaignData.alliances = alliances
@@ -620,6 +706,12 @@ function IMP_BCB_Initialize(settigns)
     CreateTab()
 
     local function OnPlayerActivated()
+        transferCampaign = nil
+        if destination and CAMPAIGN_BROWSER_MANAGER:CanQueueForCampaign(destination) then
+            CAMPAIGN_BROWSER_MANAGER:DoQueueForCampaign(destination)
+        else
+            destination = nil
+        end
         RebuildCampaignData()
 
         -- EVENT_MANAGER:UnregisterForEvent('IMP_BCB', EVENT_PLAYER_ACTIVATED)
@@ -684,6 +776,10 @@ function IMP_BCB_Initialize(settigns)
 
     showIcereach = GetUnitLevel('player') < 50 or settigns.showIcereach
     showTooltip = settigns.showTooltip
+
+    showBonuses = settigns.showBonuses
+    autoTransfer = settigns.autotransfer
+
     -- function CampaignBrowser:OnCampaignQueueStateUpdated(campaignData)
     --     self:CheckForConfirmingQueues()
     --     self:RefreshFilters()
