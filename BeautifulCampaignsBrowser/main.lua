@@ -659,8 +659,10 @@ local function RebuildCampaignData()
     -- 116 - Legion Zero (no-CP IC, Mayhem)
     -- 119 - Dragonfire (IC, Mayhem)
     -- 122 - Coldharbour (below 50, Mayhem)
+    -- 124 - Vengeance
 
     local LIST = {
+        124,
         105, 106, 111, 112, 122, -- Cyro Mayhem
         102, 101, 103, 104, -- Cyro
         119, 116,  -- IC Mayhem
