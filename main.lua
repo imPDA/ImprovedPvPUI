@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.5.1'
+addon.version = '1.5.2'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -26,6 +26,10 @@ local DEFAULTS = {
 	},
 	battleVictories = {
 		compact = false,
+	},
+	imprialSewersLabels = {
+		enabled = true,
+		scale = 1,
 	}
 }
 
@@ -78,6 +82,11 @@ function addon:OnLoad()
 
 	if sv.battleVictories.compact then
 		IMP_BV_InitializeCompactTooltip()
+	end
+
+	if sv.imprialSewersLabels.enabled then
+		Log('Labels enabled')
+		IMP_ISL_Initialize(sv.imprialSewersLabels)
 	end
 end
 

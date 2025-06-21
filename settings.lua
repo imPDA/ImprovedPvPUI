@@ -126,6 +126,31 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                 },
             },
         },
+        {
+            type = 'submenu',
+            name = 'IC Labels',
+            -- tooltip = '',
+            controls = {
+                {
+                    type = 'checkbox',
+                    name = 'Enable',
+                    getFunc = function() return sv.imprialSewersLabels.enabled end,
+                    setFunc = function(value) sv.imprialSewersLabels.enabled = value end,
+                    requiresReload = true,
+                },
+                {
+                    type = "slider",
+                    name = "Text size",
+                    getFunc = function() return sv.imprialSewersLabels.scale * 100 end,
+                    setFunc = function(value)
+                        sv.imprialSewersLabels.scale = value / 100
+                        IMP_ISL_ScaleLabels(value / 100)
+                    end,
+                    min = 50,
+                    max = 150,
+                }
+            },
+        },
     }
 
     LAM:RegisterOptionControls(settingsName, optionsData)
