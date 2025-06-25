@@ -128,7 +128,7 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
         },
         {
             type = 'submenu',
-            name = 'IC Labels',
+            name = 'Labels in IC Sewers',
             -- tooltip = '',
             controls = {
                 {
@@ -140,7 +140,7 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                 },
                 {
                     type = "slider",
-                    name = "Text size",
+                    name = "Text size (district names)",
                     getFunc = function() return sv.imprialSewersLabels.scale * 100 end,
                     setFunc = function(value)
                         sv.imprialSewersLabels.scale = value / 100
@@ -148,7 +148,14 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                     end,
                     min = 50,
                     max = 150,
-                }
+                },
+                {
+                    type = 'checkbox',
+                    name = 'Show banked Tel Vars',
+                    getFunc = function() return sv.imprialSewersBankedTelvarsLabels.enabled end,
+                    setFunc = function(value) sv.imprialSewersBankedTelvarsLabels.enabled = value end,
+                    requiresReload = true,
+                },
             },
         },
     }

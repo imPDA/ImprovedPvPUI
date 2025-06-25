@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.5.2'
+addon.version = '1.5.3'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -30,6 +30,9 @@ local DEFAULTS = {
 	imprialSewersLabels = {
 		enabled = true,
 		scale = 1,
+	},
+	imprialSewersBankedTelvarsLabels = {
+		enabled = true,
 	}
 }
 
@@ -87,6 +90,11 @@ function addon:OnLoad()
 	if sv.imprialSewersLabels.enabled then
 		Log('Labels enabled')
 		IMP_ISL_Initialize(sv.imprialSewersLabels)
+	end
+
+	if sv.imprialSewersBankedTelvarsLabels.enabled then
+		Log('Banked telvars labels enabled')
+		IMP_ISBT_Initialize(sv.imprialSewersBankedTelvarsLabels)
 	end
 end
 
