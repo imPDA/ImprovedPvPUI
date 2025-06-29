@@ -1,9 +1,9 @@
 ## Title: |c7c42f2Imp|ceeeeee-proved PvP UI|r
-## AddOnVersion: 1153000
+## AddOnVersion: 1154000
 ## APIVersion: 101046
 ## Author: |c7c42f2@impda|r [EU]
-## DependsOn: LibMainMenu-2.0>=40400 LibAddonMenu-2.0>=40 LibCustomMenu>=730 LibKeepTooltip>=1101000
-## OptionalDependsOn: LibDebugLogger>=268 PerfectPixel>=001324 LibImplex>=7
+## DependsOn: LibMainMenu-2.0>=40400 LibAddonMenu-2.0>=40 LibCustomMenu>=730 LibKeepTooltip>=1101000 LibImplex>=7
+## OptionalDependsOn: LibDebugLogger>=268 PerfectPixel>=001324
 ## SavedVariables: IMP_PVP_UI_SV
 
 logger.lua
