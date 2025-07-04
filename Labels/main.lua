@@ -65,13 +65,14 @@ local function DrawLadderLabel(keepId)
     local districtName = KEEP_ID_TO_DISTRICT_NAME[keepId]
 
     local alliance = GetKeepAlliance(keepId, BGQUERY_LOCAL)
+    if alliance ~= 1 and alliance ~= 2 and alliance ~= 3 then return end
     local color = ALLIANCE_COLOR[alliance]
     local ladderData = DISTRICT_LADDERS[ALLIANCE][districtName]
 
     Log('Keep allianceId: %d, color: %.4f %.4f %.4f', alliance, color[1], color[2], color[3])
 
     local text = LibImplex.Text(
-        districtName,
+        zo_strformat(SI_TOOLTIP_KEEP_NAME, GetKeepName(keepId)),
         TOP,
         ladderData[1],
         ladderData[2],
@@ -122,20 +123,23 @@ local function DrawLadderLabels()
 
         if districtName then
             local text = DrawLadderLabel(keepId)
-            local districtIcon = DrawDistrictIcon(text)
+            
+            if text then
+                local districtIcon = DrawDistrictIcon(text)
 
-            local isUnderAttack = GetKeepUnderAttack(keepId, BGQUERY_LOCAL)
+                local isUnderAttack = GetKeepUnderAttack(keepId, BGQUERY_LOCAL)
 
-            local underAttackBackground
-            if isUnderAttack then
-                underAttackBackground = DrawUnderAttackBackground(districtIcon)
+                local underAttackBackground
+                if isUnderAttack then
+                    underAttackBackground = DrawUnderAttackBackground(districtIcon)
+                end
+
+                LADDERS_LABELS[keepId] = {
+                    text = text,
+                    districtIcon = districtIcon,
+                    underAttackBackground = underAttackBackground,
+                }
             end
-
-            LADDERS_LABELS[keepId] = {
-                text = text,
-                districtIcon = districtIcon,
-                underAttackBackground = underAttackBackground,
-            }
         end
     end
 end
