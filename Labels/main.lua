@@ -57,12 +57,27 @@ do
         ALLIANCE_COLOR[allianceId] = {GetAllianceColor(allianceId):UnpackRGBA()}
         ALLIANCE_COLOR[allianceId][4] = 0.75
     end
+    ALLIANCE_COLOR[0] = {1, 1, 1, 0.75}
 end
+
+-- ----------------------------------------------------------------------------
+
+local function getLocalizedDistrictNameV1(keepId)
+    return KEEP_ID_TO_DISTRICT_NAME[keepId]
+end
+
+local function getLocalizedDistrictNameV2(keepId)
+    return zo_strformat(SI_TOOLTIP_KEEP_NAME, GetKeepName(keepId))
+end
+
+local getLocalizedDistrictName = getLocalizedDistrictNameV1
+
+-- ----------------------------------------------------------------------------
 
 local function DrawLadderLabel(keepId)
     Log('Drawing ladder label for keepId %d', keepId)
 
-    local districtName = KEEP_ID_TO_DISTRICT_NAME[keepId]
+    local districtName = KEEP_ID_TO_DISTRICT_NAME[keepId]  -- TODO: refactor with full localization support
 
     local alliance = GetKeepAlliance(keepId, BGQUERY_LOCAL)
     local color = ALLIANCE_COLOR[alliance]
@@ -71,7 +86,7 @@ local function DrawLadderLabel(keepId)
     Log('Keep allianceId: %d, color: %.4f %.4f %.4f', alliance, color[1], color[2], color[3])
 
     local text = LibImplex.Text(
-        districtName,
+        getLocalizedDistrictName(keepId),
         TOP,
         ladderData[1],
         ladderData[2],
@@ -204,6 +219,16 @@ local function RegisterEvents()
     end)
 end
 
+local V2_LOCALIZATION = {
+    -- ['en'] = true,
+    ['de'] = true,
+    -- ['fr'] = true,
+    -- ['es'] = true,
+    -- ['ru'] = true,
+    -- ['jp'] = false,
+    -- ['zh'] = false,
+}
+
 local IN_SEWERS
 local function OnPlayerActivated()
     local inSewers = GetZoneId(GetUnitZoneIndex('player')) == 643
@@ -218,6 +243,10 @@ local function OnPlayerActivated()
         EVENT_MANAGER:UnregisterForEvent(EVENT_NAMESPACE, EVENT_KEEP_ALLIANCE_OWNER_CHANGED)
 
         return
+    end
+
+    if V2_LOCALIZATION[GetCVar("language.2")] then
+        getLocalizedDistrictName = getLocalizedDistrictNameV2
     end
 
     DrawLadderLabels()

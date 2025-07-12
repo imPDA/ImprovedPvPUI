@@ -1,0 +1,77 @@
+This addon is created to provide better user experience for everybody interested in PvP (Cyrodiil, IC, ToT, BGs, Duels). Available features listed below, I will gradually add something new. Requests appreciated!
+
+[SIZE="3"][COLOR="Green"]Go to settings to enable any feature first, all of them will be DISABLED/OFF by default![/COLOR][/SIZE]
+
+[SIZE="3"][COLOR="YellowGreen"]Dependencies[/COLOR][/SIZE]
+[spoiler][LIST]
+[*][URL="https://www.esoui.com/downloads/info4108-LibImplex.html"]LibImplex[/URL]
+[*][URL="https://www.esoui.com/downloads/info4037-LibKeepTooltip.html"]LibKeepTooltip[/URL]
+[*][URL="https://www.esoui.com/downloads/info7-LibAddonMenu-2.0.html"]LibAddonMenu-2.0[/URL]
+[*][URL="https://www.esoui.com/downloads/info2118-LibMainMenu-2.0.html"]LibMainMenu-2.0[/URL]
+[*][URL="https://www.esoui.com/downloads/info1146-LibCustomMenu.html"]LibCustomMenu[/URL]
+[/LIST][/spoiler]
+
+[SIZE="3"][COLOR="YellowGreen"]Beautiful Campaigns Manager[/COLOR][/SIZE]
+
+It will add new tab to Alliance War menu with new interface:
+[LIST]
+[*]all campaigns on one panel
+[*]big buttons, nice background
+[*]double-click to join campaign
+[*]color differentiation between campaigns you can and can not join
+[*]icons for alliance locked and home campaigns
+[*]compatible with PerfectPixel
+[*]new keybind for direct access to this panel (User Interface -> Campaigns Browser)
+[*]tooltips with comprehensive information about every campaign
+[*]autotransfer from Cyro to Cyro and from IC to IC. Due to game restrictions, you can not queue Cyrodiil from Cyrodiil and you have to tp to any IC first. New feature will do it automatically, just choose any campaign you want to join and addon automatically queue for IC first and Cyrodiil afterwards (IC -> Cyro -> IC works as well). You still need to accept queue manually (or use something like ftsio but with care)
+[*]Cyro score bonuses (due to game restrictions, you can see bonuses only for home and current campaign, I wish it would be possible to see all campaigns bonuses!)
+[/LIST]
+
+Going to add
+[LIST]
+[*]right-click actions, like "change home campaign"
+[*]better backgrounds, default loading screens are good for demonstration but they dont fit well imo
+[/LIST]
+
+[SIZE="3"][COLOR="YellowGreen"]Keep Tooltip[/COLOR][/SIZE]
+
+New more compact exterior of keep tooltip (Cyrodiil and Imperial City)
+[LIST]
+[*]deleted alliance owner line, header are colored instead + added alliance icon
+[*]guild owner line can be hidden (can be hidden for resources only or for both keeps and resources)
+[*]added line with all keep resources and levels (can be hidden)
+[*]lines with sieges combined to one line
+[*]added siege duration timer (at last line in paratheses, can be hidden)
+[*]tooltip can be updated once every second while mouse over keep icon (instead of only on MouseIn event, it allows timer actually change every second, can be turned on/off)
+[*]tracker for last activity of every keep/resource similar to [URL="https://www.esoui.com/downloads/info1996-Cyrotivity.html"]Cyrotivity[/URL], but on steroids. Can show last keep change (captured/defended, how long capture lasted, how long ago) - check screenshot attached
+[/LIST]
+
+[SIZE="3"][COLOR="YellowGreen"]Labels in IC sewers[/COLOR][/SIZE]
+
+(image #8-9)
+[LIST]
+[*]labels and icons for all district ladders in color of controlling alliance
+[*]under attack icon background for attacked districts
+[*]in engling only (LibImplex requires other translations for writing module)
+[*]size of font can be changed in settings
+[*]amount of banked Tel Var stones
+[/LIST]
+
+[SIZE="3"][COLOR="YellowGreen"]Other features[/COLOR][/SIZE]
+[LIST]
+[*]compact battle victories (screenshot #5)
+[/LIST]
+
+Let me know if want to see more addons like this.
+
+[SIZE="3"][COLOR="YellowGreen"]Contact me[/COLOR][/SIZE]
+[LIST]
+[*]via Discord (@imPDA)
+[*][URL="https://github.com/imPDA/ImprovedPvPUI"]GitHub[/URL]
+[/LIST]
+
+[SIZE="3"][COLOR="YellowGreen"]Thanks to[/COLOR][/SIZE]
+[LIST]
+[*][URL="twitch.tv/grozlok"]@Grozlok[/URL] for testing
+[*][URL="https://www.esoui.com/forums/member.php?userid=2028"]Baertram[/URL] for help with PerfectPixel
+[/LIST]

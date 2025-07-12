@@ -1,0 +1,73 @@
+<GuiXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sir.insidi.at/or/schema/esoui.xsd">
+    <Controls>
+		<Label name="IMP_IngameBugreports_Listing_Column1"  horizontalAlignment="RIGHT"  virtual="true"><Dimensions x="30"  y="32" /></Label>
+		<Label name="IMP_IngameBugreports_Listing_Column2"  horizontalAlignment="LEFT" 	 virtual="true"><Dimensions x="220" y="32" /></Label>
+		<Label name="IMP_IngameBugreports_Listing_Column3"  horizontalAlignment="LEFT" 	 virtual="true"><Dimensions x="510" y="32" /></Label>
+
+		<Label name="IMP_IngameBugreports_Listing_Cell" font="ZoFontWinH4" wrapMode="ELLIPSIS" verticalAlignment="CENTER" text="-" virtual="true" />
+		
+		<Label name="IMP_IngameBugreports_Listing_Row" inherits="ZO_SelectableLabel" virtual="true">
+			<Dimensions y="32" />
+			<Controls>
+				<!-- TODO: texture order -->
+				<Texture name="$(parent)BG" textureFile="EsoUI/Art/Miscellaneous/listItem_selectedHighlight.dds" hidden="true">
+					<Dimensions x="900" y="52" />
+					<Anchor point="TOPLEFT" />
+					<!-- TODO: ideally, get rid of Dimensions -->
+					<!-- TODO: find out why this texture less than row with height 32 -->
+				</Texture>
+				<Label name="$(parent)Index" inherits="IMP_IngameBugreports_Listing_Cell IMP_IngameBugreports_Listing_Column1">
+					<Anchor point="LEFT" />
+				</Label>
+				<Label name="$(parent)AddonName" inherits="IMP_IngameBugreports_Listing_Cell IMP_IngameBugreports_Listing_Column2">
+					<Anchor point="LEFT" relativeTo="$(parent)Index" relativePoint="RIGHT" offsetX="8" />
+				</Label>
+				<Label name="$(parent)Error" inherits="IMP_IngameBugreports_Listing_Cell IMP_IngameBugreports_Listing_Column3">
+					<Anchor point="LEFT" relativeTo="$(parent)AddonName" relativePoint="RIGHT" offsetX="8" />
+				</Label>
+			</Controls>
+		</Label>
+
+        <TopLevelControl name="IMP_IngameBugreports_TLC" mouseEnabled="true" movable="true" hidden="true">
+            <Dimensions x="800" y="500" />
+            <Anchor point="LEFT" offsetX="48" />
+            <Controls>
+				<Backdrop name="$(parent)BG" inherits="ZO_DefaultBackdrop" />
+				<Label name="$(parent)Header" font="ZoFontHeader3" verticalAlignment="CENTER" horizontalAlignment="CENTER" text="Ingame Bugreports">
+					<!-- <Dimensions x="800" y="48" /> -->
+					<Anchor point="TOPLEFT" />
+					<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" offsetY="24" />
+				</Label>
+				<Button name="$(parent)CloseButton">
+					<Anchor point="TOPRIGHT" offsetX="10" offsetY="-12" />
+					<Dimensions x="48" y="48"/>
+					<Textures 
+						normal="/esoui/art/hud/radialicon_cancel_up.dds"
+						mouseOver="/esoui/art/hud/radialicon_cancel_over.dds"
+					/>
+					<OnClicked>
+						self:GetParent():SetHidden(true)
+					</OnClicked>
+				</Button>
+                <Control name="$(parent)Listing">
+                    <Anchor point="TOPLEFT" relativeTo="$(parent)Header" relativePoint="BOTTOMLEFT" offsetY="16" />
+					<Anchor point="BOTTOMRIGHT" />
+                    <Controls>
+                        <!-- <Backdrop name="$(parent)BG" inherits="ZO_DefaultBackdrop" /> -->
+                        <Control name="$(parent)ScrollableList" inherits="ZO_ScrollList">
+							<AnchorFill />
+						</Control>
+                    </Controls>
+                </Control>
+            </Controls>
+
+			<OnInitialized>
+				IMP_IngameBugreports_UI_OnInitialized(self)
+			</OnInitialized>
+
+			<OnShow>
+				IMP_IngameBugreports_UI_OnShow()
+			</OnShow>
+        </TopLevelControl>
+    </Controls>
+</GuiXml>
