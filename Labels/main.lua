@@ -4,8 +4,9 @@ local EVENT_NAMESPACE = 'IMP_ISL_EVENT_NAMESPACE'
 
 local PI = math.pi
 local Object = LibImplex.Marker._3DStatic
+local Vector = LibImplex.Vector
 
-local HEIGHT = 500
+local HEIGHT = 450
 local SCALE = 1
 
 local ALLIANCE
@@ -22,28 +23,28 @@ local KEEP_ID_TO_DISTRICT_NAME = {
 
 local DISTRICT_LADDERS = {
     [3] = {
-        ['Arboretum']   = {{4475.43, 13352 + HEIGHT, 155940.81},        {0, 0.75 * PI, 0, true}},
-        ['Temple']      = {{4414.21, 13352 + HEIGHT, 154322.96},        {0, 0.25 * PI, 0, true}},
-        ['Nobles']      = {{5910.60, 13352 + HEIGHT, 154189.31},        {0, 0.00 * PI, 0, true}},
-        ['Elven\nGardens']={{6175.10, 13352 + HEIGHT + 80, 154701.49},  {0, 1.50 * PI, 0, true}},
-        ['Memorial']    = {{6177.06, 13352 + HEIGHT, 155529.24},        {0, 1.50 * PI, 0, true}},
-        ['Arena']       = {{5808.02, 13352 + HEIGHT, 156012.89},        {0, 1.00 * PI, 0, true}},
+        ['Arboretum']   = {{4475.43, 13352, 155940.81},        {0, 0.75 * PI, 0, true}},
+        ['Temple']      = {{4414.21, 13352, 154322.96},        {0, 0.25 * PI, 0, true}},
+        ['Nobles']      = {{5910.60, 13352, 154189.31},        {0, 0.00 * PI, 0, true}},
+        ['Elven\nGardens']={{6175.10, 13352, 154701.49},  {0, 1.50 * PI, 0, true}},
+        ['Memorial']    = {{6177.06, 13352, 155529.24},        {0, 1.50 * PI, 0, true}},
+        ['Arena']       = {{5808.02, 13352, 156012.89},        {0, 1.00 * PI, 0, true}},
     },
     [2] = {
-        ['Arboretum']   = {{166340.68, 11179 + HEIGHT, 21422.42},       {0, 0.50 * PI, 0, true}},
-        ['Temple']      = {{166846.57, 11179 + HEIGHT, 20972.04},       {0, 0.00 * PI, 0, true}},
-        ['Nobles']      = {{167732.30, 11179 + HEIGHT, 20981.23},       {0, 0.00 * PI, 0, true}},
-        ['Elven\nGardens']={{167738.94, 11179 + HEIGHT + 80, 22792.80}, {0, 1.00 * PI, 0, true}},
-        ['Memorial']    = {{166836.60, 11179 + HEIGHT, 22796.48},       {0, 1.00 * PI, 0, true}},
-        ['Arena']       = {{166341.71, 11179 + HEIGHT, 22326.58},       {0, 0.50 * PI, 0, true}},
+        ['Arboretum']   = {{166340.68, 11179, 21422.42},       {0, 0.50 * PI, 0, true}},
+        ['Temple']      = {{166846.57, 11179, 20972.04},       {0, 0.00 * PI, 0, true}},
+        ['Nobles']      = {{167732.30, 11179, 20981.23},       {0, 0.00 * PI, 0, true}},
+        ['Elven\nGardens']={{167738.94, 11179, 22792.80}, {0, 1.00 * PI, 0, true}},
+        ['Memorial']    = {{166836.60, 11179, 22796.48},       {0, 1.00 * PI, 0, true}},
+        ['Arena']       = {{166341.71, 11179, 22326.58},       {0, 0.50 * PI, 0, true}},
     },
     [1] = {
-        ['Arboretum']   = {{273615.09, 12850 + HEIGHT, 180038.41},      {0, 0.23 * PI, 0, true}},
-        ['Temple']      = {{275242.71, 12850 + HEIGHT, 179970.38},      {0, 1.74 * PI, 0, true}},
-        ['Nobles']      = {{275361.16, 12850 + HEIGHT, 181472.99},      {0, 1.50 * PI, 0, true}},
-        ['Elven\nGardens']={{274850.06, 12850 + HEIGHT + 80, 181737.74},{0, 1.00 * PI, 0, true}},
-        ['Memorial']    = {{274020.06, 12850 + HEIGHT, 181708.23},      {0, 1.00 * PI, 0, true}},
-        ['Arena']       = {{273539.26, 12850 + HEIGHT, 181370.65},      {0, 0.50 * PI, 0, true}},
+        ['Arboretum']   = {{273615.09, 12850, 180038.41},      {0, 0.23 * PI, 0, true}},
+        ['Temple']      = {{275242.71, 12850, 179970.38},      {0, 1.74 * PI, 0, true}},
+        ['Nobles']      = {{275361.16, 12850, 181472.99},      {0, 1.50 * PI, 0, true}},
+        ['Elven\nGardens']={{274850.06, 12850, 181737.74},{0, 1.00 * PI, 0, true}},
+        ['Memorial']    = {{274020.06, 12850, 181708.23},      {0, 1.00 * PI, 0, true}},
+        ['Arena']       = {{273539.26, 12850, 181370.65},      {0, 0.50 * PI, 0, true}},
     }
 }
 
@@ -75,7 +76,7 @@ local getLocalizedDistrictName = getLocalizedDistrictNameV1
 -- ----------------------------------------------------------------------------
 
 local function DrawLadderLabel(keepId)
-    Log('Drawing ladder label for keepId %d', keepId)
+    -- Log('Drawing ladder label for keepId %d', keepId)
 
     local districtName = KEEP_ID_TO_DISTRICT_NAME[keepId]  -- TODO: refactor with full localization support
 
@@ -83,12 +84,12 @@ local function DrawLadderLabel(keepId)
     local color = ALLIANCE_COLOR[alliance]
     local ladderData = DISTRICT_LADDERS[ALLIANCE][districtName]
 
-    Log('Keep allianceId: %d, color: %.4f %.4f %.4f', alliance, color[1], color[2], color[3])
+    -- Log('Keep allianceId: %d, color: %.4f %.4f %.4f', alliance, color[1], color[2], color[3])
 
     local text = LibImplex.Text(
         getLocalizedDistrictName(keepId),
-        TOP,
-        ladderData[1],
+        CENTER,
+        Vector(ladderData[1]) + {0, HEIGHT, 0},
         ladderData[2],
         0.56 * SCALE,
         color
@@ -113,7 +114,7 @@ local function DrawUnderAttackBackground(districtIcon)
 end
 
 local function DrawDistrictIcon(text)
-    Log('Drawing icon')
+    -- Log('Drawing icon')
 
     local districtIcon = Object(
         text:GetRelativePointCoordinates(TOP, 0, 30, 2),
@@ -129,30 +130,44 @@ local function DrawDistrictIcon(text)
     return districtIcon
 end
 
+local keepIdSeen = {}
+
 local function DrawLadderLabels()
+    for k, _ in pairs(keepIdSeen) do
+        keepIdSeen[k] = false
+    end
+
+    local i = 0
     for keepIndex = 1, GetNumKeeps() do
-        local keepId = GetKeepKeysByIndex(keepIndex)
+        local keepId, battlegroundContext = GetKeepKeysByIndex(keepIndex)
+        -- Log('index: %d, id: %d, context: %d, name: %s', keepIndex, keepId, battlegroundContext, GetKeepName(keepId))
+        if battlegroundContext == BGQUERY_LOCAL then
+            if not keepIdSeen[keepId] then
+                keepIdSeen[keepId] = true
+                local districtName = KEEP_ID_TO_DISTRICT_NAME[keepId]
 
-        local districtName = KEEP_ID_TO_DISTRICT_NAME[keepId]
+                if districtName then
+                    i = i + 1
+                    local text = DrawLadderLabel(keepId)
+                    local districtIcon = DrawDistrictIcon(text)
 
-        if districtName then
-            local text = DrawLadderLabel(keepId)
-            local districtIcon = DrawDistrictIcon(text)
+                    local isUnderAttack = GetKeepUnderAttack(keepId, BGQUERY_LOCAL)
 
-            local isUnderAttack = GetKeepUnderAttack(keepId, BGQUERY_LOCAL)
+                    local underAttackBackground
+                    if isUnderAttack then
+                        underAttackBackground = DrawUnderAttackBackground(districtIcon)
+                    end
 
-            local underAttackBackground
-            if isUnderAttack then
-                underAttackBackground = DrawUnderAttackBackground(districtIcon)
+                    LADDERS_LABELS[keepId] = {
+                        text = text,
+                        districtIcon = districtIcon,
+                        underAttackBackground = underAttackBackground,
+                    }
+                end
             end
-
-            LADDERS_LABELS[keepId] = {
-                text = text,
-                districtIcon = districtIcon,
-                underAttackBackground = underAttackBackground,
-            }
         end
     end
+    Log('%d labels drawn', i)
 end
 
 local function ClearLadderLabels()
@@ -261,8 +276,16 @@ function IMP_ISL_ScaleLabels(scale)
     end
 end
 
+function IMP_ISL_ChangeHeight(newHeight)
+    HEIGHT = newHeight
+    ClearLadderLabels()
+    DrawLadderLabels()
+end
+
 function IMP_ISL_Initialize(sv)
-    SCALE = sv.scale or 1
+    SCALE = sv.scale or SCALE
+    HEIGHT = sv.height or HEIGHT
+
     EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
     EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_KEEPS_INITIALIZED, function()
         Log('!!! Keeps initialized')

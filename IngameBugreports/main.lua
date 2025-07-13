@@ -24,7 +24,7 @@ local Log = df
 
 local MailBox = _G_IMP_class()
 
-local GLOBAL_PROCESS = '_g'
+local EXTERNAL_PROCESS = '_e'
 
 function MailBox:__init()
     -- TOSO: can detect initial state?
@@ -52,8 +52,8 @@ function MailBox:__init()
     -- ZO_PreHook(_G, 'RequestOpenMailbox', function() return self:Open(GLOBAL_PROCESS) end)
     -- ZO_PreHook(_G, 'CloseMailbox', function() return self:Close(GLOBAL_PROCESS) end)
 
-    RequestOpenMailbox = function() self:Open(GLOBAL_PROCESS) end
-    CloseMailbox = function() self:Close(GLOBAL_PROCESS) end
+    RequestOpenMailbox = function() self:Open(EXTERNAL_PROCESS) end
+    CloseMailbox = function() self:Close(EXTERNAL_PROCESS) end
     -- TODO: probably better in my particular case...
 end
 
@@ -85,7 +85,6 @@ function MailBox:__close()
 end
 
 local MAILBOX = MailBox()
-GLOBAL_MAILBOX = MAILBOX
 
 -- ----------------------------------------------------------------------------
 
@@ -150,9 +149,6 @@ local function parseTable(s)
     if currentKey and buffer ~= '' then
         result[currentKey] = trim(buffer)
     end
-
-    GLOBAL_RESULT = GLOBAL_RESULT or {}
-    GLOBAL_RESULT[#GLOBAL_RESULT+1] = result
 
     return result
 end
@@ -437,21 +433,6 @@ function Deleter:__start_loop()
         self:__update()
     end)
 end
-
--- local function clearAndCount(tbl)
---     local i = 0
---     for mailId_s, _ in pairs(tbl) do
---         if not GLOBAL_WTF then
---             GLOBAL_WTF = tbl
---             return 0
---         end
-
---         Log('%s left in queue', mailId_s)
---         tbl[mailId_s] = nil
---         i = i + 1
---     end
---     return i
--- end
 
 function Deleter:__stop_loop()
     if next(self.inQueue) ~= nil then
@@ -810,11 +791,6 @@ function addon:Start()
             -- ('!!IBR%d'):format(math.random(1, 1000000000)),
             data.bodySendCallback(error)
         )
-
-        -- if Zgoo then
-        --     GLOBAL_ERROR_MESSAGE = error
-        --     Zgoo.CommandHandler('GLOBAL_ERROR_MESSAGE')
-        -- end
     end)
 end
 

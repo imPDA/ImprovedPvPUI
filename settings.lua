@@ -150,6 +150,17 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                     max = 150,
                 },
                 {
+                    type = "slider",
+                    name = "Text height (district names)",
+                    getFunc = function() return sv.imprialSewersLabels.height end,
+                    setFunc = function(value)
+                        sv.imprialSewersLabels.height = value
+                        IMP_ISL_ChangeHeight(value)
+                    end,
+                    min = 100,
+                    max = 1000,
+                },
+                {
                     type = 'checkbox',
                     name = 'Show banked Tel Vars',
                     getFunc = function() return sv.imprialSewersBankedTelvarsLabels.enabled end,
