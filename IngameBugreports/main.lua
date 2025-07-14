@@ -17,8 +17,7 @@ local DEFAULTS = {
 
 -- ----------------------------------------------------------------------------
 
--- local Log = function(...) end
-local Log = df
+local L = IMP_IngameBugreports_Logger
 
 -- ----------------------------------------------------------------------------
 
@@ -34,16 +33,16 @@ function MailBox:__init()
 
     EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_MAIL_CLOSE_MAILBOX, function()
         self.opened = false
-        Log('MailBox closed')
+        L:Debug('MailBox closed')
 
         if next(self.registry) ~= nil then
-            Log('MailBox was closed, but there are still processes running!')
+            L:Debug('MailBox was closed, but there are still processes running!')
         end
     end)
 
     EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_MAIL_OPEN_MAILBOX, function()
         self.opened = true
-        Log('MailBox opened')
+        L:Debug('MailBox opened')
     end)
 
     self.__RequestOpenMailbox = RequestOpenMailbox
@@ -225,12 +224,12 @@ function Sender:__init(sv)
         local data = self.queue[self.head-1]
 
         if not data then
-            Log('Empty data')
+            L:Debug('Empty data')
             return
         end
 
         if data[1] ~= playerName then
-            Log('Somehow these names are not equal!')
+            L:Debug('Somehow these names are not equal!')
             return
         end
 
@@ -261,25 +260,25 @@ function Sender:__init(sv)
     EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_MAIL_SEND_FAILED, function(_, reason)
         self.numFails = self.numFails + 1
         if reason == MAIL_SEND_RESULT_FAIL_MAILBOX_FULL then
-            Log('----------')
-            Log('----------')
-            Log('----------')
-            Log('---FULL---')
-            Log('----------')
-            Log('----------')
-            Log('----------')
+            Log:Debug('----------')
+            Log:Debug('----------')
+            Log:Debug('----------')
+            Log:Debug('---FULL---')
+            Log:Debug('----------')
+            Log:Debug('----------')
+            Log:Debug('----------')
             Logout()
         end
 
-        Log('%d fails', self.numFails)
+        Log:Debug('%d fails', self.numFails)
         if self.numFails >= 10 then
-            Log('----------')
-            Log('----------')
-            Log('----------')
-            Log('-10 FAILS-')
-            Log('----------')
-            Log('----------')
-            Log('----------')
+            Log:Debug('----------')
+            Log:Debug('----------')
+            Log:Debug('----------')
+            Log:Debug('-10 FAILS-')
+            Log:Debug('----------')
+            Log:Debug('----------')
+            Log:Debug('----------')
             Logout()
         end
     end)
@@ -287,7 +286,7 @@ function Sender:__init(sv)
 end
 
 function Sender:Send(to, subject, body)
-    Log('New message to be send!')
+    L:Debug('New message to be send!')
 
     local data = {to, subject, body}
 
@@ -337,10 +336,10 @@ function Sender:__send(to, subject, body)
         return
     end
 
-    Log('Sending mail!')
+    L:Debug('Sending mail!')
 
     if not MAILBOX.opened then
-        Log('MailBox was not opened for sending yet :(')
+        L:Debug('MailBox was not opened for sending yet :(')
 
         zo_callLater(function() self:__send(to, subject, body) end, 50)
         retries = retries + 1
@@ -372,15 +371,15 @@ function Deleter:__init()
         local mailId_s = Id64ToString(mailId)
 
         if success then
-            Log('[v] %s deleted', mailId_s)
+            L:Debug('[v] %s deleted', mailId_s)
 
             if NOT_DELETED_BEFORE[mailId_s] then
-                Log('[v] %s deleted after %dms', mailId_s, GetGameTimeMilliseconds() - NOT_DELETED_BEFORE[mailId_s])
+                L:Debug('[v] %s deleted after %dms', mailId_s, GetGameTimeMilliseconds() - NOT_DELETED_BEFORE[mailId_s])
             end
 
             self.inQueue[mailId_s] = nil
         else
-            Log('[x] %s NOT deleted', mailId_s)
+            L:Debug('[x] %s NOT deleted', mailId_s)
             self:Delete(mailId)
 
             NOT_DELETED_BEFORE[mailId_s] = GetGameTimeMilliseconds()
@@ -415,7 +414,7 @@ function Deleter:__update()
     self.head = self.head + 1
 
     if self.inQueue[mailId_s] == nil then
-        Log('Trying to queue already deleted mail! %s', mailId_s)
+        L:Debug('Trying to queue already deleted mail! %s', mailId_s)
         return self:__update()
     end
 
@@ -423,13 +422,13 @@ function Deleter:__update()
 end
 
 function Deleter:__start_loop()
-    -- Log('Starting loop')
+    -- Log:Debug('Starting loop')
     if self.running then return end
 
     self.running = true
     MAILBOX:Open('deleter')
     EVENT_MANAGER:RegisterForUpdate(EVENT_NAMESPACE..'Deleter', 200, function()
-        -- Log('Update')
+        -- Log:Debug('Update')
         self:__update()
     end)
 end
@@ -442,7 +441,7 @@ function Deleter:__stop_loop()
             self.queue[self.tail] = mailId_s
             n = n + 1
         end
-        Log('There were %d mails still in the queue', n)
+        L:Debug('There were %d mails still in the queue', n)
         return
     end
 
@@ -451,11 +450,11 @@ function Deleter:__stop_loop()
     self.head = 1
     self.tail = 0
 
-    -- Log('inQueue size: %d', clearAndCount(self.inQueue))
+    -- Log:Debug('inQueue size: %d', clearAndCount(self.inQueue))
     -- self.inQueue = {}
 
     self.running = false
-    Log('Stopped loop')
+    L:Debug('Stopped loop')
 end
 
 -- ----------------------------------------------------------------------------
@@ -492,7 +491,7 @@ function Reader:Read(mailId)
 end
 
 function Reader:__update()
-    -- Log('Requested: %s %d ago', tostring(self.requested), GetGameTimeMilliseconds() - self.lastRequestMs)
+    -- Log:Debug('Requested: %s %d ago', tostring(self.requested), GetGameTimeMilliseconds() - self.lastRequestMs)
 
     if self.requestedId and (GetGameTimeMilliseconds() - self.lastRequestMs <= 100) then return end
 
@@ -508,13 +507,13 @@ function Reader:__update()
 end
 
 function Reader:__start_loop()
-    -- Log('Starting loop')
+    -- Log:Debug('Starting loop')
     if self.running then return end
 
     self.running = true
     MAILBOX:Open('reader')
     EVENT_MANAGER:RegisterForUpdate(EVENT_NAMESPACE..'Reader', 50, function()
-        -- Log('Update')
+        -- Log:Debug('Update')
         self:__update()
     end)
 end
@@ -523,7 +522,7 @@ function Reader:__stop_loop()
     EVENT_MANAGER:UnregisterForUpdate(EVENT_NAMESPACE..'Reader')
     MAILBOX:Close('reader')
     self.running = false
-    -- Log('Stopped loop')
+    -- Log:Debug('Stopped loop')
 end
 
 function Reader:__queue_reading(mailId)
@@ -560,7 +559,7 @@ function ErrorMessage:__parse()
     for line in self.errorString:gmatch('[^\r\n]+') do
         local success, result = pcall(self.__handleLine, self, line)
         if not success then
-            Log(result)
+            L(result)
         end
     end
 end
@@ -750,14 +749,14 @@ end
 
 function addon:Start()
     if not self:ShouldStart() then
-        Log('No addons in registry, aborting...')
+        L:Debug('No addons in registry, aborting...')
         return
     end
 
     self:CreateSettings()
     self:ShowWarning()
 
-    Log('Loading %s...', self.displayName)
+    L:Debug('Loading %s...', self.displayName)
 
     local errorsMet = self.sv['errorsMet'] or {}
     self.sv['errorsMet'] = errorsMet
@@ -774,12 +773,12 @@ function addon:Start()
         local timestamp = GetTimeStamp()
 
         if lastMetTimestamp and timestamp - lastMetTimestamp <= 60 * 60 * 24 then
-            Log('Already met this error recently: %s, abort...', tostring(hash))
+            L:Debug('Already met this error recently: %s, abort...', tostring(hash))
             return
         end
         errorsMet[hash] = GetTimeStamp()
 
-        Log('New error met: %s', tostring(hash))
+        L:Debug('New error met: %s', tostring(hash))
 
         if not self:ShouldEmitFor(error) then return end
 
@@ -810,7 +809,7 @@ function addon:ShouldEmitFor(error)
 
     local hash = error:Hash()
     if self.blacklist[hash] then
-        Log('This error in a stop list, aborting...')
+        L:Debug('This error in a stop list, aborting...')
         return
     end
 
@@ -819,7 +818,7 @@ function addon:ShouldEmitFor(error)
     for i = 1, #remoteBlacklist do
         if tonumber(remoteBlacklist[i]) == hash then
             self.blacklist[hash] = true
-            Log('This error in a stop list, aborting...')
+            L:Debug('This error in a stop list, aborting...')
             return
         end
     end

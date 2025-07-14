@@ -1,4 +1,4 @@
-local Log = df
+local L = IMP_IngameBugreports_Logger
 
 -- ----------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ local function UpdateScrollListControl(force)
         i = i + 1
     end
 
-    Log('Size of data list: %d', #dataList)
+    L:Debug('Size of data list: %d', #dataList)
     -- table.sort(dataList, function(a,b) return a.data.index < b.data.index end)
 
     ZO_ScrollList_Commit(scrollListControl)

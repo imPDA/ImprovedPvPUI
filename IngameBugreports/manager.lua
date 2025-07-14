@@ -1,4 +1,4 @@
-local Log = df
+local L = IMP_IngameBugreports_Logger
 local EVENT_NAMESPACE = '0197febc-ba1e-7dd2-95a1-63be6e0c041f'
 
 -- ----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ function Manager:OnMailInboxUpdate()
         end
     end
 
-    Log('End of mailbox')
+    L:Debug('End of mailbox')
 end
 
 function Manager:__read(mailId)
