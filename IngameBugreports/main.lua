@@ -635,6 +635,10 @@ function ErrorMessage:Hash()
     return djb2(filePath)
 end
 
+function ErrorMessage:IsAddonRelated()
+    return self:GetFirstStacktraceWithAddon() ~= nil
+end
+
 IMP_IngameBugreports_ErrorMessage = ErrorMessage
 
 -- ----------------------------------------------------------------------------
@@ -767,6 +771,8 @@ function addon:Start()
 
     EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_LUA_ERROR, function(_, errorString, errorCode)
         local error = ErrorMessage(errorString, errorCode)
+        if not error:IsAddonRelated() then return end
+
         local hash = error:Hash()
 
         local lastMetTimestamp = errorsMet[hash]

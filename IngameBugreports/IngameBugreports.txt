@@ -1,7 +1,7 @@
 ## Title: |cAFD3FFIngameBugreports|r
 ## Description: ^
 ## Author: |c7c42f2@impda|r
-## AddOnVersion: 2
+## AddOnVersion: 3
 ## APIVersion: 101046
 ## IsLibrary: true
 ## SavedVariables: IngameBugreportsSavedVariables
