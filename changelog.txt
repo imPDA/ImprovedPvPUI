@@ -1,3 +1,6 @@
+1.5.7
+- IngameBugreports logging and improvement
+
 1.5.6
 IC labels:
 - Centered, same height for all districts in all localizations
