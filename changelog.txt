@@ -1,3 +1,7 @@
+1.5.8
+- Added API to send debug messages (IngameBugreports)
+- New setting - localization (IC labels)
+
 1.5.7
 - IngameBugreports logging and improvement
 
