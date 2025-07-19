@@ -11,6 +11,8 @@ local SCALE = 1
 
 local ALLIANCE
 
+local DEBUG_DATA = {}
+
 -- ----------------------------------------------------------------------------
 local KEEP_ID_TO_DISTRICT_NAME = {
     [141] = 'Nobles',
@@ -18,7 +20,7 @@ local KEEP_ID_TO_DISTRICT_NAME = {
     [143] = 'Arboretum',
     [146] = 'Arena',
     [147] = 'Temple',
-    [148] = 'Elven\nGardens',
+    [148] = 'Elven Gardens',
 }
 
 local DISTRICT_LADDERS = {
@@ -26,7 +28,7 @@ local DISTRICT_LADDERS = {
         ['Arboretum']   = {{4475.43, 13352, 155940.81},        {0, 0.75 * PI, 0, true}},
         ['Temple']      = {{4414.21, 13352, 154322.96},        {0, 0.25 * PI, 0, true}},
         ['Nobles']      = {{5910.60, 13352, 154189.31},        {0, 0.00 * PI, 0, true}},
-        ['Elven\nGardens']={{6175.10, 13352, 154701.49},  {0, 1.50 * PI, 0, true}},
+        ['Elven Gardens']={{6175.10, 13352, 154701.49},  {0, 1.50 * PI, 0, true}},
         ['Memorial']    = {{6177.06, 13352, 155529.24},        {0, 1.50 * PI, 0, true}},
         ['Arena']       = {{5808.02, 13352, 156012.89},        {0, 1.00 * PI, 0, true}},
     },
@@ -34,7 +36,7 @@ local DISTRICT_LADDERS = {
         ['Arboretum']   = {{166340.68, 11179, 21422.42},       {0, 0.50 * PI, 0, true}},
         ['Temple']      = {{166846.57, 11179, 20972.04},       {0, 0.00 * PI, 0, true}},
         ['Nobles']      = {{167732.30, 11179, 20981.23},       {0, 0.00 * PI, 0, true}},
-        ['Elven\nGardens']={{167738.94, 11179, 22792.80}, {0, 1.00 * PI, 0, true}},
+        ['Elven Gardens']={{167738.94, 11179, 22792.80}, {0, 1.00 * PI, 0, true}},
         ['Memorial']    = {{166836.60, 11179, 22796.48},       {0, 1.00 * PI, 0, true}},
         ['Arena']       = {{166341.71, 11179, 22326.58},       {0, 0.50 * PI, 0, true}},
     },
@@ -42,7 +44,7 @@ local DISTRICT_LADDERS = {
         ['Arboretum']   = {{273615.09, 12850, 180038.41},      {0, 0.23 * PI, 0, true}},
         ['Temple']      = {{275242.71, 12850, 179970.38},      {0, 1.74 * PI, 0, true}},
         ['Nobles']      = {{275361.16, 12850, 181472.99},      {0, 1.50 * PI, 0, true}},
-        ['Elven\nGardens']={{274850.06, 12850, 181737.74},{0, 1.00 * PI, 0, true}},
+        ['Elven Gardens']={{274850.06, 12850, 181737.74},{0, 1.00 * PI, 0, true}},
         ['Memorial']    = {{274020.06, 12850, 181708.23},      {0, 1.00 * PI, 0, true}},
         ['Arena']       = {{273539.26, 12850, 181370.65},      {0, 0.50 * PI, 0, true}},
     }
@@ -63,15 +65,29 @@ end
 
 -- ----------------------------------------------------------------------------
 
-local function getLocalizedDistrictNameV1(keepId)
+local function getLocalizedDistrictNames_EN_short(keepId)
     return KEEP_ID_TO_DISTRICT_NAME[keepId]
 end
 
-local function getLocalizedDistrictNameV2(keepId)
+local function getLocalizedDistrictNames_auto(keepId)
     return zo_strformat(SI_TOOLTIP_KEEP_NAME, GetKeepName(keepId))
 end
 
-local getLocalizedDistrictName = getLocalizedDistrictNameV1
+local LOCALIZATIONS = {
+    ['default'] = getLocalizedDistrictNames_EN_short,
+    ['auto'] = getLocalizedDistrictNames_auto,
+    ['de_special'] = function(keepId)
+        if keepId == 143 then return 'Arboretum' end
+        return getLocalizedDistrictNames_auto(keepId)
+    end,
+}
+
+local ALLOWED_LANGUAGES = {
+    ['en'] = true,
+    ['de'] = true,
+}
+
+local getLocalizedDistrictName = function(...) error('MUST CHANGE') end
 
 -- ----------------------------------------------------------------------------
 
@@ -81,6 +97,15 @@ local function DrawLadderLabel(keepId)
     local districtName = KEEP_ID_TO_DISTRICT_NAME[keepId]  -- TODO: refactor with full localization support
 
     local alliance = GetKeepAlliance(keepId, BGQUERY_LOCAL)
+
+    if alliance == 0 then
+        DEBUG_DATA[#DEBUG_DATA+1] = ('%d Alliance is zero'):format(GetTimeStamp())
+        if IMP_IngameBugreports then
+            local message = table.concat(DEBUG_DATA, '\n', math.max(#DEBUG_DATA-10, 1), #DEBUG_DATA)
+            IMP_IngameBugreports:SendDebug(0, 'ImprovedPvPUI', message)
+        end
+    end
+
     local color = ALLIANCE_COLOR[alliance]
     local ladderData = DISTRICT_LADDERS[ALLIANCE][districtName]
 
@@ -92,7 +117,8 @@ local function DrawLadderLabel(keepId)
         Vector(ladderData[1]) + {0, HEIGHT, 0},
         ladderData[2],
         0.56 * SCALE,
-        color
+        color,
+        600  -- maxWidth
     )
 
     text:Render()
@@ -234,18 +260,10 @@ local function RegisterEvents()
     end)
 end
 
-local V2_LOCALIZATION = {
-    -- ['en'] = true,
-    ['de'] = true,
-    -- ['fr'] = true,
-    -- ['es'] = true,
-    -- ['ru'] = true,
-    -- ['jp'] = false,
-    -- ['zh'] = false,
-}
-
 local IN_SEWERS
 local function OnPlayerActivated()
+    DEBUG_DATA[#DEBUG_DATA+1] = ('%d Player activated in zoneId %d'):format(GetTimeStamp(), GetZoneId(GetUnitZoneIndex('player')))
+
     local inSewers = GetZoneId(GetUnitZoneIndex('player')) == 643
     if inSewers == IN_SEWERS then return end
 
@@ -260,10 +278,6 @@ local function OnPlayerActivated()
         return
     end
 
-    if V2_LOCALIZATION[GetCVar("language.2")] then
-        getLocalizedDistrictName = getLocalizedDistrictNameV2
-    end
-
     DrawLadderLabels()
     RegisterEvents()
 end
@@ -271,8 +285,14 @@ end
 -- ----------------------------------------------------------------------------
 
 function IMP_ISL_ScaleLabels(scale)
+    SCALE = scale
+
     for _, label in pairs(LADDERS_LABELS) do
         label.text:SetSize(0.56 * scale)
+
+        if label.districtIcon then
+            label.districtIcon:Move(label.text:GetRelativePointCoordinates(TOP, 0, 30, 2))
+        end
     end
 end
 
@@ -286,8 +306,28 @@ function IMP_ISL_Initialize(sv)
     SCALE = sv.scale or SCALE
     HEIGHT = sv.height or HEIGHT
 
+    getLocalizedDistrictName = LOCALIZATIONS['default']
+    if ALLOWED_LANGUAGES[GetCVar("language.2")] then
+        Log('Language: %s, localization: %s', GetCVar("language.2"), sv.localization)
+        local localizationFunc = LOCALIZATIONS[sv.localization]
+        if localizationFunc then
+            getLocalizedDistrictName = localizationFunc
+        end
+    end
+
     EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
     EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_KEEPS_INITIALIZED, function()
         Log('!!! Keeps initialized')
+        DEBUG_DATA[#DEBUG_DATA+1] = ('%d Keeps initialized'):format(GetTimeStamp())
+        for keepIndex = 1, GetNumKeeps() do
+            local keepId, battlegroundContext = GetKeepKeysByIndex(keepIndex)
+            if battlegroundContext == BGQUERY_LOCAL then
+                local keepAlliance = GetKeepAlliance(keepId, battlegroundContext)
+                if keepAlliance == 0 then
+                    DEBUG_DATA[#DEBUG_DATA+1] = ('%d Keep %d alliance is zero'):format(GetTimeStamp(), keepId)
+                    return
+                end
+            end
+        end
     end)
 end

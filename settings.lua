@@ -139,8 +139,26 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                     requiresReload = true,
                 },
                 {
-                    type = "slider",
-                    name = "Text size (district names)",
+                    type = 'dropdown',
+                    name = 'Localization',
+                    tooltip = [[
+Addon Default - Short EN names (without "District").
+
+Ingame Default - Full names in the chosen language (for EN and DE only, for now).
+
+DE (Arboretum) - Same as "Ingame Default," but "Baumgartenbezirk" is replaced with "Arboretum".
+                    ]],
+                    choices = {'Addon Default', 'Ingame Default', 'DE (Arboretum)'},
+                    choicesValues = {'default', 'auto', 'de_special'},
+                    getFunc = function() return sv.imprialSewersLabels.localization end,
+                    setFunc = function(var) sv.imprialSewersLabels.localization = var end,
+                    width = 'full',
+                    warning = 'Will need to reload the UI',
+                    requiresReload = true,
+                },
+                {
+                    type = 'slider',
+                    name = 'Text size (district names)',
                     getFunc = function() return sv.imprialSewersLabels.scale * 100 end,
                     setFunc = function(value)
                         sv.imprialSewersLabels.scale = value / 100
@@ -150,8 +168,8 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                     max = 150,
                 },
                 {
-                    type = "slider",
-                    name = "Text height (district names)",
+                    type = 'slider',
+                    name = 'Text height (district names)',
                     getFunc = function() return sv.imprialSewersLabels.height end,
                     setFunc = function(value)
                         sv.imprialSewersLabels.height = value

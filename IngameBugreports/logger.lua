@@ -4,4 +4,9 @@ local dummyLogger = setmetatable({}, {
     end
 })
 
-IMP_IngameBugreports_Logger = LibDebugLogger and LibDebugLogger('IngameBugreports') or dummyLogger
+if LibDebugLogger then
+    IMP_IngameBugreports_Logger = LibDebugLogger('IngameBugreports')
+    IMP_IngameBugreports_Logger:SetMinLevelOverride(LibDebugLogger.LOG_LEVEL_DEBUG)
+else
+    IMP_IngameBugreports_Logger = dummyLogger
+end

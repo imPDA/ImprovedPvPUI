@@ -797,6 +797,8 @@ function addon:Start()
             data.bodySendCallback(error)
         )
     end)
+
+    self.sv['debugSent'] = self.sv['debugSent'] or {}
 end
 
 function addon:CreateManager()
@@ -854,6 +856,39 @@ function addon:ShouldStart()
 
     return true
 end
+
+-- ----------------------------------------------------------------------------
+
+function addon:SendDebug(code, addonName, message)
+    local debugSent = self.sv['debugSent']
+
+    local lastSentTimestamp = debugSent[code]
+    local timestamp = GetTimeStamp()
+
+    if lastSentTimestamp and timestamp - lastSentTimestamp <= 60 * 60 * 24 * 7 then
+        L:Debug('Already sent this debug recently: %s, abort...', tostring(code))
+        return
+    end
+
+    L:Debug('New debug going to be sent: %s', tostring(code))
+
+    -- if not self:ShouldEmitFor(error) then return end
+
+    local data = self.registry[addonName]
+    if not data then
+        L:Warn('No data for `%s` addon found in registry!', addonName)
+        return
+    end
+
+    debugSent[code] = timestamp
+    self.sender:Send(
+        data.recipient,
+        ('!!IDM%d'):format(code),
+        message
+    )
+end
+
+-- ----------------------------------------------------------------------------
 
 do
     local ADDON = addon

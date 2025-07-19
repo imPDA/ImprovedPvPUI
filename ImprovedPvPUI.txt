@@ -1,12 +1,12 @@
 ## Title: |c7c42f2Imp|ceeeeee-proved PvP UI|r
 ## Description: Collection of PvP-related UI improvements
 ## Author: |c7c42f2@impda|r [EU]
-## AddOnVersion: 1157000
+## AddOnVersion: 1158000
 ## APIVersion: 101046
 ## IsLibrary: false
 ## SavedVariables: IMP_PVP_UI_SV
-## DependsOn: LibMainMenu-2.0>=40400 LibAddonMenu-2.0>=40 LibCustomMenu>=730 LibKeepTooltip>=1101000 LibImplex>=11
-## OptionalDependsOn: LibDebugLogger>=268 PerfectPixel>=001324 IngameBugreports>=1
+## DependsOn: LibMainMenu-2.0>=40400 LibAddonMenu-2.0>=40 LibCustomMenu>=730 LibKeepTooltip>=1101000 LibImplex>=12
+## OptionalDependsOn: LibDebugLogger>=268 PerfectPixel>=001324 IngameBugreports>=4
 
 logger.lua
 
