@@ -1,3 +1,8 @@
+1.5.9
+IC labels:
+- Fix for wrongly colored white ("neutral") labels
+- Minor changes due to LibImplex update
+
 1.5.8
 - Added API to send debug messages (IngameBugreports)
 - New setting - localization (IC labels)
