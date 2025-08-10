@@ -26,7 +26,7 @@ local function DrawTelVarStonesIcon()
     local position = TEL_VAR_STONES_LABEL:GetRelativePointCoordinates(BOTTOMRIGHT, 30, 35+8, 2)
 
     if TEL_VAR_STONES_ICON then
-        TEL_VAR_STONES_ICON.control:Set3DRenderSpaceOrigin(WorldPositionToGuiRender3DPosition(unpack(position)))
+        TEL_VAR_STONES_ICON:Move(position)
     else
         TEL_VAR_STONES_ICON = Object(
             position,

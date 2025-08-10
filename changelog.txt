@@ -1,3 +1,6 @@
+1.5.9.1
+- Quickfix for "Banked Telvars" feature
+
 1.5.9
 IC labels:
 - Fix for wrongly colored white ("neutral") labels
