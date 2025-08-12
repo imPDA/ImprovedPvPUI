@@ -1,3 +1,6 @@
+1.5.9.2
+- Quickfix for "Nobles" and "Memorial" label positions for AD
+
 1.5.9.1
 - Quickfix for "Banked Telvars" feature
 
