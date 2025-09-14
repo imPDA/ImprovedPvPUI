@@ -51,7 +51,7 @@ local function DrawTelVarStonesLabel(telVarStonesAmount)
             TOP,
             bankData[1],
             bankData[2],
-            0.4,
+            1,
             {93 / 255, 163 / 255, 1}
         )
         TEL_VAR_STONES_LABEL:Render()

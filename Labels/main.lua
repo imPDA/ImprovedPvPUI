@@ -101,7 +101,7 @@ local function DrawLadderLabel(keepId)
         CENTER,
         Vector(ladderData[1]) + {0, HEIGHT, 0},
         {0, ladderData[2] * PI, 0, true},
-        0.56 * SCALE,
+        1 * SCALE,
         nil,
         600,  -- maxWidth
         false,

@@ -1,3 +1,9 @@
+1.6.0
+Battleground labels: [NEW - turn it ON in settings first!]
+- Shows timer, score and amount of players in each team as 3D text (only while on respawn)
+IC labels:
+- Changed scale for labels due to changes in LibImplex (please use settings to make them bigger if you used to bigger labels)
+
 1.5.9.2
 - Quickfix for "Nobles" and "Memorial" label positions for AD
 

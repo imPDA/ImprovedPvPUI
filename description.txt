@@ -57,6 +57,12 @@ New more compact exterior of keep tooltip (Cyrodiil and Imperial City)
 [*]amount of banked Tel Var stones
 [/LIST]
 
+[SIZE="3"][COLOR="YellowGreen"]Labels in battlegrounds[/COLOR][/SIZE]
+[LIST]
+[*]timer with current score, match type and amount of players
+[*]shown only on respawn
+[/LIST]
+
 [SIZE="3"][COLOR="YellowGreen"]Other features[/COLOR][/SIZE]
 [LIST]
 [*]compact battle victories (screenshot #5)

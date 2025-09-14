@@ -128,7 +128,7 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
         },
         {
             type = 'submenu',
-            name = 'Labels in IC Sewers',
+            name = '3D Labels in IC Sewers',
             -- tooltip = '',
             controls = {
                 {
@@ -165,7 +165,7 @@ DE (Arboretum) - Same as "Ingame Default," but "Baumgartenbezirk" is replaced wi
                         IMP_ISL_ScaleLabels(value / 100)
                     end,
                     min = 50,
-                    max = 150,
+                    max = 450,
                 },
                 {
                     type = 'slider',
@@ -185,6 +185,23 @@ DE (Arboretum) - Same as "Ingame Default," but "Baumgartenbezirk" is replaced wi
                     setFunc = function(value) sv.imprialSewersBankedTelvarsLabels.enabled = value end,
                     requiresReload = true,
                 },
+            },
+        },
+        {
+            type = 'submenu',
+            name = '3D Labels for Battlegrounds',
+            controls = {
+                {
+                    type = 'description',
+                    text = 'It took much time to actually make it as I had to be lucky enough to visit all maps, so if you find any bug or you have better ideas where to place these labels or better layout in mind - please contact me via ESOUI forum. Enjoy :)',
+                },
+                {
+                    type = 'checkbox',
+                    name = 'Enable',
+                    getFunc = function() return sv.battlegroundLabels.enabled end,
+                    setFunc = function(value) sv.battlegroundLabels.enabled = value end,
+                    requiresReload = true,
+                }
             },
         },
     }
