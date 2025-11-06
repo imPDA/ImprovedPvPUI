@@ -1,3 +1,6 @@
+1.6.1
+- All labels: RU localization
+
 1.6.0
 Battleground labels: [NEW - turn it ON in settings first!]
 - Shows timer, score and amount of players in each team as 3D text (only while on respawn)

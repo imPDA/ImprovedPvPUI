@@ -18,13 +18,23 @@ local ALLIANCE
 -- this implementation just faster and simpler at this point
 local IC_DISTRICTS = {141, 142, 143, 146, 147, 148}
 
-local SHORT_EN_NAMES = {
-    [141] = 'Nobles',
-    [142] = 'Memorial',
-    [143] = 'Arboretum',
-    [146] = 'Arena',
-    [147] = 'Temple',
-    [148] = 'Elven Gardens',
+local SHORT_NAMES = {
+    ['en'] = {
+        [141] = 'Nobles',
+        [142] = 'Memorial',
+        [143] = 'Arboretum',
+        [146] = 'Arena',
+        [147] = 'Temple',
+        [148] = 'Elven Gardens',
+    },
+    ['ru'] = {
+        [141] = 'Район Знати',
+        [142] = 'Мемориальный район',
+        [143] = 'Дендрарий',
+        [146] = 'Арена',
+        [147] = 'Храмовый район',
+        [148] = 'Эльфийские сады',
+    }
 }
 
 local DISTRICT_LADDERS = {
@@ -65,8 +75,8 @@ end
 
 -- ----------------------------------------------------------------------------
 
-local function getLocalizedDistrictNames_EN_short(keepId)
-    return SHORT_EN_NAMES[keepId]
+local function getLocalizedDistrictNames_short(keepId)
+    return SHORT_NAMES[GetCVar("language.2")][keepId]
 end
 
 local function getLocalizedDistrictNames_auto(keepId)
@@ -74,7 +84,7 @@ local function getLocalizedDistrictNames_auto(keepId)
 end
 
 local LOCALIZATIONS = {
-    ['default'] = getLocalizedDistrictNames_EN_short,
+    ['default'] = getLocalizedDistrictNames_short,
     ['auto'] = getLocalizedDistrictNames_auto,
     ['de_special'] = function(keepId)
         if keepId == 143 then return 'Arboretum' end
@@ -85,6 +95,7 @@ local LOCALIZATIONS = {
 local ALLOWED_LANGUAGES = {
     ['en'] = true,
     ['de'] = true,
+    ['ru'] = true,
 }
 
 local getLocalizedDistrictName = function(...) error('MUST CHANGE') end
