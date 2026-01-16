@@ -1,5 +1,5 @@
 local PI = math.pi
-local Object = LibImplex.Marker._3DStatic
+local Object = LibImplex.Objects._3DStatic
 
 local EVENT_NAMESPACE = 'IMP_ISBT_EVENT_NAMESPACE'
 local ALLIANCE
@@ -14,9 +14,9 @@ end
 -- ----------------------------------------------------------------------------
 
 local BANKS = {
-    [3] = {{5264, 13167+355+40, 153583}, {0, 0.00 * PI, 0, true}},
-    [2] = {{167277, 11058+355, 24284}, {0, 1.00 * PI, 0, true}},
-    [1] = {{270504, 12694+355, 178253}, {0, -0.23 * PI, 0, true}},
+    [3] = {{5264, 13167+355+40, 153583}, {0, 0.00 * PI, 0}},
+    [2] = {{167277, 11058+355, 24284}, {0, 1.00 * PI, 0}},
+    [1] = {{270504, 12694+355, 178253}, {0, -0.23 * PI, 0}},
 }
 
 local TEL_VAR_STONES_LABEL
@@ -28,12 +28,12 @@ local function DrawTelVarStonesIcon()
     if TEL_VAR_STONES_ICON then
         TEL_VAR_STONES_ICON:Move(position)
     else
-        TEL_VAR_STONES_ICON = Object(
-            position,
-            TEL_VAR_STONES_LABEL.orientation,
-            '/esoui/art/hud/telvar_meter_currency.dds',
-            {0.7, 0.7}
-        )
+        TEL_VAR_STONES_ICON = Object()
+        TEL_VAR_STONES_ICON:SetPosition(unpack(position))
+        TEL_VAR_STONES_ICON:SetOrientation(unpack(TEL_VAR_STONES_LABEL.orientation))
+        TEL_VAR_STONES_ICON:SetTexture('/esoui/art/hud/telvar_meter_currency.dds')
+        TEL_VAR_STONES_ICON:SetDimensions(0.7, 0.7)
+        TEL_VAR_STONES_ICON:SetUseDepthBuffer(true)
     end
 end
 
@@ -54,6 +54,7 @@ local function DrawTelVarStonesLabel(telVarStonesAmount)
             1,
             {93 / 255, 163 / 255, 1}
         )
+        TEL_VAR_STONES_LABEL.useDepthBuffer = true
         TEL_VAR_STONES_LABEL:Render()
     end
 

@@ -149,12 +149,13 @@ local function ChangeReceipes()
 end
 
 local function OnPlayerActivated(_, initial)
-    Log('Player activated')
+    Log('Player activated, initial: %s', tostring(initial))
 
     if not IsInAvAZone() then return end
     local currentCampaignId = GetCurrentCampaignId()
+    Log('Current campaign id: %d, previous: %d', currentCampaignId, campaignId)
 
-    if initial or campaignId ~= currentCampaignId then
+    if campaignId ~= currentCampaignId then
         Log('Recreating the table')
         ZO_ClearTable(siegeBuffer)
 

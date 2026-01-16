@@ -24,14 +24,14 @@ local function FormatKills(allAlliancesKills)
     return table.concat(tbl, '  / ')
 end
 
+local R, G, B = ZO_TOOLTIP_DEFAULT_COLOR:UnpackRGB()
 local function AppendKillLocationInfo(self, pin)
 	local killLocationIndex = pin.m_PinTag
 
 	local kills = GetKills(killLocationIndex)
 	local text = FormatKills(kills)
-	local color = {0, 1, 0}
 
-	self:AddLine(text, '', unpack(color), CENTER, MODIFY_TEXT_TYPE_NONE, TEXT_ALIGN_LEFT)
+	self:AddLine(text, '', R, G, B, CENTER, MODIFY_TEXT_TYPE_NONE, TEXT_ALIGN_LEFT)
 end
 
 function IMP_BV_InitializeCompactTooltip()

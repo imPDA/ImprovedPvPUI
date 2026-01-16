@@ -1,3 +1,8 @@
+1.6.2
+- New version of LibImplex
+- Timers for camps in Cyrodiil (shows how long ago camp was placed)
+- Fix for keep activity tracker
+
 1.6.1
 - All labels: RU localization
 

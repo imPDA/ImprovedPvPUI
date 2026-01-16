@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.6.1'
+addon.version = '1.6.2'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -23,6 +23,7 @@ local DEFAULTS = {
 		guildOwner = true,
 		hideResourceGuildOwner = false,
 		tracker = false,
+		forwardCampsTimer = true,
 	},
 	battleVictories = {
 		compact = false,
@@ -84,6 +85,10 @@ function addon:OnLoad()
 
 		if sv.keepTooltip.tracker then
 			IMP_KT_EnableTracker()
+		end
+
+		if sv.keepTooltip.forwardCampsTimer then
+			IMP_KT_ForwardCamps_Initialize()
 		end
 	end
 

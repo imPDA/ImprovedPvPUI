@@ -110,6 +110,13 @@ function addon:Initialize(settingsName, settingsDisplayName, sv)
                     setFunc = function(value) sv.keepTooltip.hideResourceGuildOwner = value end,
                     requiresReload = true,
                 },
+                {
+                    type = 'checkbox',
+                    name = 'Show forward camps timer',
+                    getFunc = function() return sv.keepTooltip.forwardCampsTimer end,
+                    setFunc = function(value) sv.keepTooltip.forwardCampsTimer = value end,
+                    requiresReload = true,
+                },
             },
         },
         {

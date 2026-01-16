@@ -3,8 +3,22 @@ local Log = IMP_PVP_UI_Logger('IMP_ISL')
 local EVENT_NAMESPACE = 'IMP_ISL_EVENT_NAMESPACE'
 
 local PI = math.pi
-local Object = LibImplex.Marker._3D
+local Object = LibImplex.Objects('ImprovedPvPUI')._3D
 local Vector = LibImplex.Vector
+
+-- ----------------------------------------------------------------------------
+
+local LIGHT_SOURCE_POSITION = LibImplex.Vector({5270, 13500, 155120})
+local SHINESS = 64
+
+local LightSourceInRoomCenter = LibImplex.Systems.Lighting2(LIGHT_SOURCE_POSITION, SHINESS)
+
+local lightedObject = function()
+    local obj = Object()
+    obj:AddSystem(LightSourceInRoomCenter)
+
+    return obj
+end
 
 -- ----------------------------------------------------------------------------
 
@@ -68,9 +82,15 @@ local ALLIANCE_COLOR = {}
 do
     for allianceId = 1, 3 do
         ALLIANCE_COLOR[allianceId] = {GetAllianceColor(allianceId):UnpackRGBA()}
-        ALLIANCE_COLOR[allianceId][4] = 0.75
+        ALLIANCE_COLOR[allianceId][4] = 0.85
     end
     ALLIANCE_COLOR[0] = {1, 1, 1, 0.75}
+
+    for _, allianceColor in pairs(ALLIANCE_COLOR) do
+        for channel = 1, 3 do
+            allianceColor[channel] = allianceColor[channel] * 0.75
+        end
+    end
 end
 
 -- ----------------------------------------------------------------------------
@@ -115,8 +135,9 @@ local function DrawLadderLabel(keepId)
         1 * SCALE,
         nil,
         600,  -- maxWidth
-        false,
-        LibImplex.Text.OBJECT_FACTORIES.Object
+        false
+        -- lightedObject
+        -- LibImplex.Text.OBJECT_FACTORIES.Object
     )
 
     text:Render()
@@ -125,32 +146,33 @@ local function DrawLadderLabel(keepId)
 end
 
 local function DrawDistrictIcon(text)
-    local districtIcon = Object(
-        text:GetRelativePointCoordinates(TOP, 0, 30, 2),
-        text.orientation,
-        'EsoUI/Art/MapPins/AvA_imperialDistrict_Neutral.dds',
-        {1.5, 1.5}
-    )
-    districtIcon:SetDrawLevel(1000)
+    local districtIcon = Object()
+    -- local districtIcon = lightedObject()
+    districtIcon:SetPosition(unpack(text:GetRelativePointCoordinates(TOP, 0, 30, 2)))
+    districtIcon:SetOrientation(unpack(text.orientation))
+    districtIcon:SetTexture('EsoUI/Art/MapPins/AvA_imperialDistrict_Neutral.dds')
+    districtIcon:SetDimensions(1.5, 1.5)
+    districtIcon:SetUseDepthBuffer(true)
+    -- districtIcon.control:SetDrawLevel(1000)
 
     return districtIcon
 end
 
 local function DrawUnderAttackBackground(districtIcon)
-    local underAttackBackground = Object(
-        districtIcon:GetRelativePointCoordinates(CENTER, 0, 0, -1),
-        districtIcon.orientation,
-        'EsoUI/Art/MapPins/AvA_attackBurst_64.dds',
-        {1.5, 1.5}  -- TODO: districtIcon.size
-    )
-    underAttackBackground:SetDrawLevel(999)
-    underAttackBackground:SetAlpha(0.25)
+    local underAttackBackground = Object()
+    underAttackBackground:SetPosition(districtIcon:GetRelativePointCoordinates(CENTER, 0, 0, -1))
+    underAttackBackground:CopyOrientation(districtIcon)
+    underAttackBackground:SetTexture('EsoUI/Art/MapPins/AvA_attackBurst_64.dds')
+    underAttackBackground:SetDimensions(1.5, 1.5)
+    underAttackBackground:SetUseDepthBuffer(true)
+    -- underAttackBackground.control:SetDrawLevel(999)
+    underAttackBackground.control:SetAlpha(0.25)
 
     return underAttackBackground
 end
 
 local function setLabelUnderAttack(label, isUnderAttack)
-    label.underAttackBackground:SetHidden(not isUnderAttack)
+    label.underAttackBackground.control:SetHidden(not isUnderAttack)
 end
 
 local function setLabelColor(label, color)
