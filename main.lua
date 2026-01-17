@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.6.2'
+addon.version = '1.6.3'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -110,13 +110,14 @@ function addon:OnLoad()
 		IMP_BL_Initialize()
 	end
 
-	if IMP_IngameBugreports then
-		local function callback(error)
-        	return error.errorString
-		end
+	-- TODO: return when IngamBugreport will be published as a standalone addon
+	-- if IMP_IngameBugreports then
+	-- 	local function callback(error)
+    --     	return error.errorString
+	-- 	end
 
-		IMP_IngameBugreports:Subscribe(self.name, '@imPDA', callback, function() end)
-	end
+	-- 	IMP_IngameBugreports:Subscribe(self.name, '@imPDA', callback, function() end)
+	-- end
 end
 
 local function OnAddonLoaded(_, addonName)
