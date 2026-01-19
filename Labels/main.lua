@@ -148,7 +148,7 @@ end
 local function DrawDistrictIcon(text)
     local districtIcon = Object()
     -- local districtIcon = lightedObject()
-    districtIcon:SetPosition(unpack(text:GetRelativePointCoordinates(TOP, 0, 30, 2)))
+    districtIcon:SetPosition(text:GetRelativePointCoordinates(TOP, 0, 30, 2))
     districtIcon:SetOrientation(unpack(text.orientation))
     districtIcon:SetTexture('EsoUI/Art/MapPins/AvA_imperialDistrict_Neutral.dds')
     districtIcon:SetDimensions(1.5, 1.5)
@@ -308,7 +308,7 @@ function IMP_ISL_ScaleLabels(scale)
         label.text:SetSize(0.56 * scale)
 
         if label.districtIcon then
-            label.districtIcon:Move(label.text:GetRelativePointCoordinates(TOP, 0, 30, 2))
+            label.districtIcon:SetPosition(label.text:GetRelativePointCoordinates(TOP, 0, 30, 2))
         end
     end
 end

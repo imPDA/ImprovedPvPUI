@@ -126,7 +126,7 @@ local function DrawLabel()
     countdownLabel = LibImplex.Text('00:00', nil, position, orientation, TIMER_SIZE, defaultColor, MAX_WIDTH, OUTLINE, nil, LibImplex.Fonts._Monospace)
     countdownLabel:Render()
 
-    local countdownLabelBottom = countdownLabel:GetRelativePointCoordinates(BOTTOM, 0, 100, 5)
+    local countdownLabelBottom = {countdownLabel:GetRelativePointCoordinates(BOTTOM, 0, 100, 5)}
     vsLabel = LibImplex.Text('vs', TOP, countdownLabelBottom, orientation, VS_SIZE, defaultColor, MAX_WIDTH, OUTLINE)
     vsLabel:Render()
 
@@ -135,7 +135,7 @@ local function DrawLabel()
         local relativeTo = vsLabel
         local relativePoint = teamLabelPositions[i].relativePoint
 
-        local labelPosition = relativeTo:GetRelativePointCoordinates(unpack(relativePoint))
+        local labelPosition = {relativeTo:GetRelativePointCoordinates(unpack(relativePoint))}
 
         teamLabels[i] = LibImplex.Text('9', anchorPoint, labelPosition, orientation, PLAYER_COUNTER_SIZE, teamColors[i], MAX_WIDTH, OUTLINE)
         -- teamLabels[i]:Render()
@@ -144,7 +144,7 @@ local function DrawLabel()
     local battlegroundType = GetCurrentBattlegroundGameType()
     local gameTypeString = GetString('SI_BATTLEGROUNDGAMETYPE', battlegroundType)
 
-    local countdownLabelTop = countdownLabel:GetRelativePointCoordinates(TOP, 0, -80, 5)
+    local countdownLabelTop = {countdownLabel:GetRelativePointCoordinates(TOP, 0, -80, 5)}
     typeLabel = LibImplex.Text(gameTypeString, BOTTOM, countdownLabelTop, orientation, VS_SIZE, defaultColor, MAX_WIDTH, OUTLINE)
     typeLabel:Render()
 
@@ -153,7 +153,7 @@ local function DrawLabel()
         local relativeTo = typeLabel
         local relativePoint = scoreLabelPositions[i].relativePoint
 
-        local labelPosition = relativeTo:GetRelativePointCoordinates(unpack(relativePoint))
+        local labelPosition = {relativeTo:GetRelativePointCoordinates(unpack(relativePoint))}
 
         scoreLabels[i] = LibImplex.Text('999', anchorPoint, labelPosition, orientation, SCORE_SIZE, teamColors[i], MAX_WIDTH, OUTLINE)
         -- scoreLabels[i]:Render()

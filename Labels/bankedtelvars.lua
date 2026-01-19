@@ -23,13 +23,13 @@ local TEL_VAR_STONES_LABEL
 local TEL_VAR_STONES_ICON
 
 local function DrawTelVarStonesIcon()
-    local position = TEL_VAR_STONES_LABEL:GetRelativePointCoordinates(BOTTOMRIGHT, 30, 35+8, 2)
+    local pX, pY, pZ = TEL_VAR_STONES_LABEL:GetRelativePointCoordinates(BOTTOMRIGHT, 30, 35+8, -2)
 
     if TEL_VAR_STONES_ICON then
-        TEL_VAR_STONES_ICON:Move(position)
+        TEL_VAR_STONES_ICON:SetPosition(pX, pY, pZ)
     else
         TEL_VAR_STONES_ICON = Object()
-        TEL_VAR_STONES_ICON:SetPosition(unpack(position))
+        TEL_VAR_STONES_ICON:SetPosition(pX, pY, pZ)
         TEL_VAR_STONES_ICON:SetOrientation(unpack(TEL_VAR_STONES_LABEL.orientation))
         TEL_VAR_STONES_ICON:SetTexture('/esoui/art/hud/telvar_meter_currency.dds')
         TEL_VAR_STONES_ICON:SetDimensions(0.7, 0.7)
