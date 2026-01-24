@@ -177,7 +177,7 @@ local function OnPlayerActivated(_, initial)
             local keepBuffer = siegeBuffer[keepId]
             if IsLocalBattlegroundContext(battlegroundContext) then
                 local currentAllianceId = GetKeepAlliance(keepId, battlegroundContext)
-                if keepBuffer[AFTER] and keepBuffer[AFTER][ALLIANCE] and keepBuffer[AFTER][ALLIANCE] ~= currentAllianceId then
+                if keepBuffer and keepBuffer[AFTER] and keepBuffer[AFTER][ALLIANCE] and keepBuffer[AFTER][ALLIANCE] ~= currentAllianceId then
                     keepBuffer[BEFORE] = {keepBuffer[AFTER][ALLIANCE], nil}
                     keepBuffer[AFTER] = {currentAllianceId, nil}
 
