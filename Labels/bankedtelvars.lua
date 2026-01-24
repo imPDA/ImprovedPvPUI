@@ -33,7 +33,7 @@ local function DrawTelVarStonesIcon()
         TEL_VAR_STONES_ICON:SetOrientation(unpack(TEL_VAR_STONES_LABEL.orientation))
         TEL_VAR_STONES_ICON:SetTexture('/esoui/art/hud/telvar_meter_currency.dds')
         TEL_VAR_STONES_ICON:SetDimensions(0.7, 0.7)
-        TEL_VAR_STONES_ICON:SetUseDepthBuffer(true)
+        TEL_VAR_STONES_ICON:AddSystem(LibImplex.Systems.DepthBuffer)
     end
 end
 

@@ -152,7 +152,7 @@ local function DrawDistrictIcon(text)
     districtIcon:SetOrientation(unpack(text.orientation))
     districtIcon:SetTexture('EsoUI/Art/MapPins/AvA_imperialDistrict_Neutral.dds')
     districtIcon:SetDimensions(1.5, 1.5)
-    districtIcon:SetUseDepthBuffer(true)
+    districtIcon:AddSystem(LibImplex.Systems.DepthBuffer)
     -- districtIcon.control:SetDrawLevel(1000)
 
     return districtIcon
@@ -164,7 +164,7 @@ local function DrawUnderAttackBackground(districtIcon)
     underAttackBackground:CopyOrientation(districtIcon)
     underAttackBackground:SetTexture('EsoUI/Art/MapPins/AvA_attackBurst_64.dds')
     underAttackBackground:SetDimensions(1.5, 1.5)
-    underAttackBackground:SetUseDepthBuffer(true)
+    underAttackBackground:AddSystem(LibImplex.Systems.DepthBuffer)
     -- underAttackBackground.control:SetDrawLevel(999)
     underAttackBackground.control:SetAlpha(0.25)
 

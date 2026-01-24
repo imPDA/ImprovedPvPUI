@@ -1,3 +1,7 @@
+1.6.4
+- New version of LibImplex
+- Added new tooltip for restricted links in Cyrodiil
+
 1.6.3
 - IngameBugreports separated
 
