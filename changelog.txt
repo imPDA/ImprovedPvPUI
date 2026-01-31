@@ -1,3 +1,6 @@
+1.6.5
+- Fix for de localization and scale for labels in IC sewers
+
 1.6.4
 - New version of LibImplex
 - Added new tooltip for restricted links in Cyrodiil

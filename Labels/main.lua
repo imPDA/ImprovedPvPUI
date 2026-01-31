@@ -103,14 +103,20 @@ local function getLocalizedDistrictNames_auto(keepId)
     return zo_strformat(SI_TOOLTIP_KEEP_NAME, GetKeepName(keepId))
 end
 
+local function getLocalizedDistrictNames_de(keepId)
+    if keepId == 143 then return 'Arboretum' end
+    return getLocalizedDistrictNames_auto(keepId)
+end
+
 local LOCALIZATIONS = {
     ['default'] = getLocalizedDistrictNames_short,
     ['auto'] = getLocalizedDistrictNames_auto,
-    ['de_special'] = function(keepId)
-        if keepId == 143 then return 'Arboretum' end
-        return getLocalizedDistrictNames_auto(keepId)
-    end,
+    ['de_special'] = getLocalizedDistrictNames_de,
 }
+
+if GetCVar("language.2") == 'de' then
+    LOCALIZATIONS['default'] = getLocalizedDistrictNames_de
+end
 
 local ALLOWED_LANGUAGES = {
     ['en'] = true,
@@ -296,6 +302,7 @@ local function OnPlayerActivated()
     end
 
     DrawEverything()
+    IMP_ISL_ScaleLabels(SCALE)
     RegisterEvents()
 end
 
