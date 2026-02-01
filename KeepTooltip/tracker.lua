@@ -148,27 +148,48 @@ local function ChangeReceipes()
     Log('Recipes changed')
 end
 
-local function OnPlayerActivated(_, initial)
-    Log('Player activated, initial: %s', tostring(initial))
+local function RecreateSiegeBuffer()
+    Log('Recreating the table')
+    ZO_ClearTable(siegeBuffer)
+
+    local numKeeps = GetNumKeeps()
+    Log('numKeeps: %d', numKeeps)
+    local localContextKeepIds = {}
+    for i = 1, numKeeps do
+        local keepId, battlegroundContext = GetKeepKeysByIndex(i)
+
+        if IsLocalBattlegroundContext(battlegroundContext) then
+            table.insert(localContextKeepIds, keepId)
+            local allianceId = GetKeepAlliance(keepId, battlegroundContext)
+            siegeBuffer[keepId] = {}
+            siegeBuffer[keepId][BEFORE] = {allianceId, nil}
+        end
+    end
+
+    Log('N: %d, keeps: %s', #localContextKeepIds, table.concat(localContextKeepIds, ', '))
+
+    return #localContextKeepIds > 0
+end
+
+local function OnKeepsInitialized()
+    EVENT_MANAGER:UnregisterForEvent(EVENT_NAMESPACE, EVENT_KEEPS_INITIALIZED)
+
+    RecreateSiegeBuffer()
+end
+
+local function OnPlayerActivated()
+    Log('Player activated')
 
     if not IsInAvAZone() then return end
     local currentCampaignId = GetCurrentCampaignId()
-    Log('Current campaign id: %d, previous: %d', currentCampaignId, campaignId)
+    Log('Current campaign id: %d, previous: %s', currentCampaignId, tostring(campaignId))
 
     if campaignId ~= currentCampaignId then
-        Log('Recreating the table')
-        ZO_ClearTable(siegeBuffer)
-
+        EVENT_MANAGER:UnregisterForEvent(EVENT_NAMESPACE, EVENT_KEEP_UNDER_ATTACK_CHANGED)
         campaignId = currentCampaignId
-        local numKeeps = GetNumKeeps()
-        for i = 1, numKeeps do
-            local keepId, battlegroundContext = GetKeepKeysByIndex(i)
-
-            if IsLocalBattlegroundContext(battlegroundContext) then
-                local allianceId = GetKeepAlliance(keepId, battlegroundContext)
-                siegeBuffer[keepId] = {}
-                siegeBuffer[keepId][BEFORE] = {allianceId, nil}
-            end
+        if not RecreateSiegeBuffer() then
+            Log('WARNING: 0 keeps added to the table')
+            EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_KEEPS_INITIALIZED, OnKeepsInitialized)
         end
     else
         local numKeeps = GetNumKeeps()
@@ -191,12 +212,12 @@ local function OnPlayerActivated(_, initial)
         end
     end
 
-    EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_KEEP_UNDER_ATTACK_CHANGED, OnKeepUnderAttack)
+    -- EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_KEEP_UNDER_ATTACK_CHANGED, OnKeepUnderAttack)
 end
 
 function IMP_KT_EnableTracker()
     ChangeReceipes()
     EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
+    EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_KEEP_UNDER_ATTACK_CHANGED, OnKeepUnderAttack)
+    -- EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_KEEPS_INITIALIZED, function() Log('EVENT_KEEPS_INITIALIZED') end)
 end
-
-IMP_KT_siegeBuffer = siegeBuffer
