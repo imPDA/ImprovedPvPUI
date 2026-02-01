@@ -48,7 +48,26 @@ local SHORT_NAMES = {
         [146] = 'Арена',
         [147] = 'Храмовый район',
         [148] = 'Эльфийские сады',
-    }
+    },
+    ['fr'] = {
+        [141] = 'Nobles',
+        [142] = 'Souvenir',
+        [143] = 'Arboretum',
+        [146] = 'Arene',
+        [147] = 'Temple',
+        [148] = 'Jardins elfiques',
+    },
+}
+
+local FULL_DISTRICT_NAMES = {
+    ['fr'] = {
+        [141] = 'quartier des Nobles',
+        [142] = 'le Quartier du Souvenir',
+        [143] = "l'Arboretum",
+        [146] = "le quartier de l'Arene",
+        [147] = 'le quartier du Temple',
+        [148] = 'le Quartier des Jardins elfiques',
+    },
 }
 
 local DISTRICT_LADDERS = {
@@ -108,6 +127,10 @@ local function getLocalizedDistrictNames_de(keepId)
     return getLocalizedDistrictNames_auto(keepId)
 end
 
+local function getLocalizedDistrictNames_fr(keepId)
+    return FULL_DISTRICT_NAMES['fr'][keepId]
+end
+
 local LOCALIZATIONS = {
     ['default'] = getLocalizedDistrictNames_short,
     ['auto'] = getLocalizedDistrictNames_auto,
@@ -118,10 +141,15 @@ if GetCVar("language.2") == 'de' then
     LOCALIZATIONS['default'] = getLocalizedDistrictNames_de
 end
 
+if GetCVar("language.2") == 'fr' then
+    LOCALIZATIONS['auto'] = getLocalizedDistrictNames_fr
+end
+
 local ALLOWED_LANGUAGES = {
     ['en'] = true,
     ['de'] = true,
     ['ru'] = true,
+    ['fr'] = true,
 }
 
 local getLocalizedDistrictName = function(...) error('MUST CHANGE') end
@@ -191,6 +219,8 @@ local function DrawEverything()
         local keepId = IC_DISTRICTS[i]
 
         local text = DrawLadderLabel(keepId)
+        text:SetSize(0.56 * SCALE)
+
         local districtIcon = DrawDistrictIcon(text)
 
         local label = {
@@ -302,7 +332,6 @@ local function OnPlayerActivated()
     end
 
     DrawEverything()
-    IMP_ISL_ScaleLabels(SCALE)
     RegisterEvents()
 end
 
