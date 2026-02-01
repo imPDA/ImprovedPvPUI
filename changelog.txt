@@ -1,4 +1,4 @@
-1.6.7
+1.6.7 + 1.6.7.1
 - Fix for keep last activity tracker
 
 1.6.6

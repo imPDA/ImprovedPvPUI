@@ -185,7 +185,7 @@ local function OnPlayerActivated()
     Log('Current campaign id: %d, previous: %s', currentCampaignId, tostring(campaignId))
 
     if campaignId ~= currentCampaignId then
-        EVENT_MANAGER:UnregisterForEvent(EVENT_NAMESPACE, EVENT_KEEP_UNDER_ATTACK_CHANGED)
+        -- EVENT_MANAGER:UnregisterForEvent(EVENT_NAMESPACE, EVENT_KEEP_UNDER_ATTACK_CHANGED)
         campaignId = currentCampaignId
         if not RecreateSiegeBuffer() then
             Log('WARNING: 0 keeps added to the table')
