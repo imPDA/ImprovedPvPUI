@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.6.3'
+addon.version = '1.6.8'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -39,6 +39,9 @@ local DEFAULTS = {
 	battlegroundLabels = {
 		enabled = false,
 	},
+	cyrodiilLabels = {
+		showBankedAP = true,
+	}
 }
 
 function addon:OnLoad()
@@ -104,6 +107,11 @@ function addon:OnLoad()
 	if sv.imprialSewersBankedTelvarsLabels.enabled then
 		Log('Banked telvars labels enabled')
 		IMP_ISBT_Initialize(sv.imprialSewersBankedTelvarsLabels)
+	end
+
+	if sv.cyrodiilLabels.showBankedAP then
+		Log('Banked AP labels enabled')
+		IMP_CBA_Initialize(sv.cyrodiilLabels)
 	end
 
 	if sv.battlegroundLabels.enabled then

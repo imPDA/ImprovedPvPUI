@@ -1,3 +1,7 @@
+1.6.8
+- Added banked AP in Cyrodiil
+- Added animation for both banked AP and Tel-Var stones
+
 1.6.7 + 1.6.7.1
 - Fix for keep last activity tracker
 

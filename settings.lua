@@ -213,6 +213,22 @@ DE (Arboretum) - Same as "Ingame Default," but "Baumgartenbezirk" is replaced wi
         },
     }
 
+    local cyrodiilLabels = {}
+    cyrodiilLabels[#cyrodiilLabels+1] = {
+        type = 'checkbox',
+        name = 'Show Banked AP',
+        getFunc = function() return sv.cyrodiilLabels.showBankedAP end,
+        setFunc = function(value) sv.cyrodiilLabels.showBankedAP = value end,
+        requiresReload = true,
+    }
+
+    optionsData[#optionsData+1] = {
+        type = 'submenu',
+        name = 'Cyrodiil 3D Labels',
+        -- tooltip = '',
+        controls = cyrodiilLabels,
+    }
+
     LAM:RegisterOptionControls(settingsName, optionsData)
 end
 
