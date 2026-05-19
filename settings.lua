@@ -229,7 +229,89 @@ DE (Arboretum) - Same as "Ingame Default," but "Baumgartenbezirk" is replaced wi
         controls = cyrodiilLabels,
     }
 
+    local klh = {}
+    local klhsv = sv.killLocationsHistory
+
+    klh[#klh + 1] = {
+		type = 'checkbox',
+		name = 'Enable',
+		getFunc = function() return klhsv.on end,
+		setFunc = function(value) klhsv.on = value end,
+		requiresReload = true,
+	}
+
+    klh[#klh + 1] = {
+		type = 'checkbox',
+		name = 'Chat Notifications',
+		getFunc = function() return klhsv.chatNotifications end,
+		setFunc = function(value) klhsv.chatNotifications = value end,
+	}
+
+    local SELECT_CHAT_SETTING_REFERENCE = 'IMP_PVP_UI_SelectChatSettingsReference'
+	klh[#klh + 1] = {
+		type = 'dropdown',
+		name = 'Chat tab',
+		choices = IMP_PVP_UI_SHARED.GetTabNames(),
+		choicesValues = IMP_PVP_UI_SHARED.GetTabValues(),
+		getFunc = function() return klhsv.chatTab end,
+		setFunc = function(value) klhsv.chatTab = value end,
+		scrollable = true,
+		reference = SELECT_CHAT_SETTING_REFERENCE,
+	}
+
+    klh[#klh + 1] = {
+		type = 'colorpicker',
+		name = 'Pin color',
+		getFunc = function() return unpack(klhsv.pinColor) end,
+		setFunc = function(r, g, b, a)
+			klhsv.pinColor = { r, g, b, a }
+			IMP_KLH_UpdateMap()
+		end
+	}
+
+	klh[#klh + 1] = {
+		type = 'slider',
+		name = 'Duration',
+		tooltip = 'How long to show hsitory pins on map (seconds)',
+		getFunc = function() return klhsv.retention end,
+		setFunc = function(value)
+            klhsv.retention = value
+            IMP_KLH_UpdateMap()
+        end,
+		min = 10,
+		max = 3600,
+		step = 1,
+		decimals = 0,
+	}
+
+    klh[#klh+1] = {
+        type = 'iconpicker',
+        name = 'Map Pin Texture',
+        choices = {
+            'EsoUI/Art/Miscellaneous/Gamepad/gp_bullet.dds',
+	        'ImprovedPvPUI/killlocations/diamond.dds',
+	        'ImprovedPvPUI/killlocations/star.dds',
+        },
+        getFunc = function() return klhsv.pinTexture end,
+        setFunc = function(texturePath)
+            klhsv.pinTexture = texturePath
+            IMP_KLH_SetTexture(texturePath)
+        end
+    }
+
+    optionsData[#optionsData+1] = {
+        type = 'submenu',
+        name = 'Kill Locations History',
+        tooltip = 'Shows pins on map of disappeared kill locations in Cyro and IC and prints info in chat',
+        controls = klh,
+    }
+
     LAM:RegisterOptionControls(settingsName, optionsData)
+
+    CALLBACK_MANAGER:RegisterCallback('LAM-PanelOpened', function(panel_)
+        if panel_ ~= panel then return end
+        IMP_PVP_UI_SHARED.RefreshTabDropdownMenu(SELECT_CHAT_SETTING_REFERENCE)
+    end)
 end
 
 function IMP_PVP_UI_InitializeSettings(...)

@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.6.8'
+addon.version = '1.7.0'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -41,6 +41,14 @@ local DEFAULTS = {
 	},
 	cyrodiilLabels = {
 		showBankedAP = true,
+	},
+	killLocationsHistory = {
+		on = true,
+		chatNotifications = true,
+		chatTab = 1,
+		pinColor = {0, 0.75, 1},  -- {0.925, 0.592, 0.024}
+		retention = 300,
+		pinTexture = 'ImprovedPvPUI/killlocations/star.dds',
 	}
 }
 
@@ -116,6 +124,10 @@ function addon:OnLoad()
 
 	if sv.battlegroundLabels.enabled then
 		IMP_BL_Initialize()
+	end
+
+	if sv.killLocationsHistory.on then
+		IMP_KLH_Initialize(sv.killLocationsHistory)
 	end
 
 	-- TODO: return when IngamBugreport will be published as a standalone addon

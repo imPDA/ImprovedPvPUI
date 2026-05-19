@@ -46,4 +46,58 @@ function addon.SecondsToTime(seconds)
 	end
 end
 
+-- ----------------------------------------------------------------------------
+
+local function _chatSystemExists()
+	return CHAT_SYSTEM and CHAT_SYSTEM.containers and CHAT_SYSTEM.containers[1] and CHAT_SYSTEM.containers[1].windows
+end
+
+function addon.GetTabNames()
+	local tabNames = {}
+
+	if _chatSystemExists() then
+		for i = 1, #CHAT_SYSTEM.containers[1].windows do
+			tabNames[i] = CHAT_SYSTEM.containers[1]:GetTabName(i)
+		end
+	end
+
+	return tabNames
+end
+
+function addon.GetTabValues()
+    local tabValues = {}
+
+    if _chatSystemExists() then
+		for i = 1, #CHAT_SYSTEM.containers[1].windows do
+			tabValues[i] = i
+		end
+	end
+
+	return tabValues
+end
+
+function addon.RefreshTabDropdownMenu(reference)
+	local control = GetWindowManager():GetControlByName(reference)
+
+	if control then
+		control:UpdateChoices(addon.GetTabNames(), addon.GetTabValues())
+	end
+end
+
+function addon.SendMessageToChat(message, tabNumber, addTimestamp, timestampFormat)
+    -- TODO color?
+    if addTimestamp == nil then addTimestamp = true end
+    if timestampFormat == nil then timestampFormat = '%T' end
+
+	if not _chatSystemExists() then return end
+
+	if addTimestamp then
+		local time = os.date(timestampFormat, GetTimeStamp())
+		message = string.format("[%s] %s", time, message)
+	end
+
+	CHAT_SYSTEM.containers[1].windows[tabNumber].buffer:AddMessage(message)
+    -- TODO rewrite to be compatable with chat addons
+end
+
 IMP_PVP_UI_SHARED = addon

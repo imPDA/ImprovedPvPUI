@@ -1,3 +1,9 @@
+1.7.0
+- Added new module - Kill Locations History - it helps to keep track of battles across Cyro and IC
+- Is shows pins on map where kill locations recently disappered
+- You can change icon textures, color, history duration
+- Available chat notifications
+
 1.6.8
 - Added banked AP in Cyrodiil
 - Added animation for both banked AP and Tel-Var stones
