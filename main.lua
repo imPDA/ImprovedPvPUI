@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.7.0'
+addon.version = '1.7.1'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -49,6 +49,9 @@ local DEFAULTS = {
 		pinColor = {0, 0.75, 1},  -- {0.925, 0.592, 0.024}
 		retention = 300,
 		pinTexture = 'ImprovedPvPUI/killlocations/star.dds',
+	},
+	closeBattle = {
+		enabled = true,
 	}
 }
 
@@ -128,6 +131,10 @@ function addon:OnLoad()
 
 	if sv.killLocationsHistory.on then
 		IMP_KLH_Initialize(sv.killLocationsHistory)
+	end
+
+	if sv.closeBattle.enabled then
+		IMP_CB_Initialize(sv.closeBattle)
 	end
 
 	-- TODO: return when IngamBugreport will be published as a standalone addon

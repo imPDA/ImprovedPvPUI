@@ -1,11 +1,11 @@
 ## Title: |c7c42f2Imp|ceeeeee-proved PvP UI|r
 ## Description: Collection of PvP-related UI improvements
 ## Author: |c7c42f2@impda|r [EU]
-## AddOnVersion: 1170000
+## AddOnVersion: 1171000
 ## APIVersion: 101049
 ## IsLibrary: false
 ## SavedVariables: IMP_PVP_UI_SV
-## DependsOn: LibMainMenu-2.0>=40400 LibAddonMenu-2.0>=41 LibCustomMenu>=730 LibKeepTooltip>=1101000 LibImplex>=23 LibSurfaceTools
+## DependsOn: LibMainMenu-2.0>=40400 LibAddonMenu-2.0>=41 LibCustomMenu>=730 LibKeepTooltip>=1101000 LibImplex>=23 LibSurfaceTools>=3
 ## OptionalDependsOn: LibDebugLogger>=268 PerfectPixel>=001324
 
 logger.lua
@@ -32,6 +32,7 @@ Labels/main.lua
 Labels/bankedtelvars.lua
 Labels/battlegrounds.lua
 Labels/bankedap.lua
+Labels/closebattle.lua
 
 killlocations/controls.xml
 killlocations/main.lua

@@ -1,3 +1,7 @@
+1.7.1
+- Reworked Kill Locations History module
+- Added test feature 'Close Battle' showing 3D text with alliance kills above nearest battles 
+
 1.7.0
 - Added new module - Kill Locations History - it helps to keep track of battles across Cyro and IC
 - Is shows pins on map where kill locations recently disappered

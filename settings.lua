@@ -306,6 +306,24 @@ DE (Arboretum) - Same as "Ingame Default," but "Baumgartenbezirk" is replaced wi
         controls = klh,
     }
 
+    local cb = {}
+    local cbsv = sv.closeBattle
+
+    cb[#cb+1] = {
+		type = 'checkbox',
+		name = 'Enable',
+		getFunc = function() return cbsv.enabled end,
+		setFunc = function(value) cbsv.enabled = value end,
+        requiresReload = true,
+	}
+
+    optionsData[#optionsData+1] = {
+        type = 'submenu',
+        name = 'Close Battle',
+        tooltip = 'Shows close battle kills in 3D (kills of all factions)',
+        controls = cb,
+    }
+
     LAM:RegisterOptionControls(settingsName, optionsData)
 
     CALLBACK_MANAGER:RegisterCallback('LAM-PanelOpened', function(panel_)

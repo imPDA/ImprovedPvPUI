@@ -94,7 +94,6 @@ local function _getCalibration(zoneId, E)
 
     return n_x, b_x, n_z, b_z, E
 end
-GLOBAL_GET_CALIBRATION = _getCalibration
 
 local function _formatKills(kills)
 	local t = {}
@@ -190,6 +189,8 @@ function addon:Initialize(sv)
             self:OnWorldMapSceneShown()
         end
     end)
+
+	self.MIN_SIZE_TO_DISPLAY = 3
 end
 
 function addon:InitializeTooltip()
@@ -255,13 +256,15 @@ function addon:InitializeTooltip()
 
 	ZO_PostHook(WORLD_MAP_MANAGER, 'UpdateMouseoverTooltips', anchorTooltip)
 
-	self.OnMouseEnter = function(surface)
-		historyPinsMouseOver[surface.tag] = self.historyBuffer[surface.tag]
+	self.OnMouseEnter = function(tag)
+		-- local tag = self.map.surfaces[surface].tag  -- TODO: a mess...
+		historyPinsMouseOver[tag] = self.historyBuffer[tag]
 		UpdateTooltip()
 	end
 
-	self.OnMouseExit = function(surface)
-		historyPinsMouseOver[surface.tag] = nil
+	self.OnMouseExit = function(tag)
+		-- local tag = self.map.surfaces[surface].tag
+		historyPinsMouseOver[tag] = nil
 		UpdateTooltip()
 	end
 end
@@ -352,6 +355,7 @@ function addon:OnKillLocationsUpdate()
 
 	local duraion = GetGameTimeSeconds() - start
 	self.perfMeter:SetText(('Kill locations update ~%.1f us'):format(duraion * 1000000))
+	GLOBAL_IMP_METRIC_KILL_LOCATIONS_UPDATE_TIME = duraion
 
 	self:UpdateMap()
 end
@@ -430,11 +434,10 @@ local function _getKillLocationSize(kills)
 		return LARGE_KILL_LOCATION_SIZE
 	elseif totalKills > 8 then
 		return MEDIUM_KILL_LOCATION_SIZE
-	elseif totalKills > 2 then
+	else
+		-- technically >2, for simplicity - everything else
 		return SMALL_KILL_LOCATION_SIZE
 	end
-
-	error('Should not reach')
 end
 
 function addon:UpdateMap()
@@ -462,8 +465,8 @@ function addon:UpdateMap()
 		local data = historyBuffer[i]
 		local n_x, n_z = data[X], data[Z]
 
-		if _sum3(data[KILLS]) > 2 then
-			local size = _getKillLocationSize(data[KILLS])
+		local size = _getKillLocationSize(data[KILLS])
+		if size >= self.MIN_SIZE_TO_DISPLAY then
 			local alpha = sqrt(1 - 0.7 * (now - data[TIMESTAMP]) / self.sv.retention)
 
 			map:Add(n_x / ik_x + b_x, n_z / ik_z + b_z, 0, 0, size, size, nil, i)
@@ -716,7 +719,7 @@ local MAX_DISTANCE_TO_NOTIFY_KEEP_M = 250  -- meters
 function addon:Notify(data)
 	local x_w, z_w, kills = data[X], data[Z], data[KILLS]
 
-	if _sum3(kills) < 3 then return end
+	if _sum3(kills) < self.MIN_SIZE_TO_DISPLAY then return end
 
 	local ik_x, b_x, ik_z, b_z = unpack(self.mainCalibration)
 
@@ -760,6 +763,7 @@ end
 
 function IMP_KLH_Initialize(sv)
 	addon:Initialize(sv)
+	IMP_PVP_UI_KillLocationsHistory = addon
 end
 
 function IMP_KLH_UpdateMap()
