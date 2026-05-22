@@ -15,9 +15,9 @@ local ZONE_ID_CYRODIIL = 181
 local ZONE_ID_IC = 584
 
 
-local SMALL_KILL_LOCATION_SIZE  = 16
-local MEDIUM_KILL_LOCATION_SIZE = 20
-local LARGE_KILL_LOCATION_SIZE  = 24
+local SMALL_KILL_LOCATION_SIZE  = 18 * 0.75
+local MEDIUM_KILL_LOCATION_SIZE = 22 * 0.75
+local LARGE_KILL_LOCATION_SIZE  = 28 * 0.75
 
 -- ----------------------------------------------------------------------------
 
@@ -133,8 +133,17 @@ function addon:Initialize(sv)
 
 	self.onWorldMapChangedCallback = function() self:UpdateCalibration() end
 	EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_PLAYER_ACTIVATED, function()
-		self.currentZoneId = GetZoneId(GetUnitZoneIndex('player'))
+		local zoneId = GetZoneId(GetUnitZoneIndex('player'))
+		local zoneChanged = self.currentZoneId ~= zoneId
+		self.currentZoneId = zoneId
+
 		self.mainCalibration = MAIN_CALIBRATIONS[self.currentZoneId]
+
+		if self:IsCampaignChanged() or zoneChanged then
+			ZO_ClearTable(self.buffer)
+			ZO_ClearTable(self.historyBuffer)
+			self:UpdateMap()
+		end
 
 		if not self:ShouldListen() then  -- tp to different location
 			self:StopListening()
@@ -142,10 +151,6 @@ function addon:Initialize(sv)
 		end
 
 		self.onWorldMapChangedCallback()  -- TODO: it might be not necessery, refactor later
-
-		if self:IsCampaignChanged() then
-			ZO_ClearTable(self.buffer)
-		end
 
 		if not self.listening then
 			self:StartListening()
@@ -164,7 +169,9 @@ function addon:Initialize(sv)
 
 	local control = map.control
 	control:SetDrawTier(DT_HIGH)
-	control:SetDrawLayer(DL_CONTROLS)
+	-- control:SetDrawLayer(DL_CONTROLS)
+	control:SetDrawLevel(99)
+	-- control:SetDesaturation(1)
 	ZO_PostHook(_G, 'ZO_WorldMap_MouseEnter', function(_, ...) control:GetHandler('OnMouseEnter')(control) end)
     ZO_PostHook(_G, 'ZO_WorldMap_MouseExit', function(_, ...) control:GetHandler('OnMouseExit')(control) end)
 
@@ -467,7 +474,10 @@ function addon:UpdateMap()
 
 		local size = _getKillLocationSize(data[KILLS])
 		if size >= self.MIN_SIZE_TO_DISPLAY then
-			local alpha = sqrt(1 - 0.7 * (now - data[TIMESTAMP]) / self.sv.retention)
+			-- local alpha = sqrt(1 - 0.7 * (now - data[TIMESTAMP]) / self.sv.retention)
+
+			local fraction = 0.7 * (now - data[TIMESTAMP]) / self.sv.retention
+			local alpha = zo_sqrt(1 - fraction)
 
 			map:Add(n_x / ik_x + b_x, n_z / ik_z + b_z, 0, 0, size, size, nil, i)
 				:SetColor(unpack(self.sv.pinColor))
@@ -757,9 +767,6 @@ function addon:Notify(data)
 end
 -- ----------------------------------------------------------------------------
 
--- local function OnAddonLoaded()
--- 	addon:Initialize()
--- end
 
 function IMP_KLH_Initialize(sv)
 	addon:Initialize(sv)
@@ -773,7 +780,3 @@ end
 function IMP_KLH_SetTexture(texture)
 	addon.map:SetTexture(texture)
 end
-
--- ----------------------------------------------------------------------------
-
--- EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_ADD_ONS_LOADED, OnAddonLoaded)

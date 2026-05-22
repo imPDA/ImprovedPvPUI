@@ -1,3 +1,8 @@
+1.7.2
+- Visual adjustments to kill location history pins
+- Dependencies bump
+- Bugfixes
+
 1.7.1
 - Reworked Kill Locations History module
 - Added test feature 'Close Battle' showing 3D text with alliance kills above nearest battles 

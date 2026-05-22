@@ -6,13 +6,6 @@ local EVENT_NAMESPACE = 'IMP_CB_EVENT_NAMESPACE'
 
 -- ----------------------------------------------------------------------------
 
-local function comma_value(n) -- credit http://richard.warburton.it
-	local left, num, right = string.match(n, '^([^%d]*%d)(%d*)(.-)$')
-	return left .. num:reverse():gsub('(%d%d%d)','%1,'):reverse() .. right
-end
-
--- ----------------------------------------------------------------------------
-
 local addon = {}
 
 function addon:Initialize()
@@ -65,14 +58,14 @@ function addon:UpdateKillLocations(force)
             -- if abs(prw_x - krw_x) + abs(prw_z - krw_z) <= MAX_DISPLAY_DISTANCE_MANHATTAN then
             local distanceSq = (prw_x - krw_x)^2 + (prw_z - krw_z)^2
             if (distanceSq <= MAX_DISPLAY_DISTANCE_SQ) and (distanceSq >= MIN_DISPLAY_DISTANCE_SQ) then
-                df('Distance: %d', sqrt(distanceSq)/100)
+                -- df('Distance: %d', sqrt(distanceSq)/100)
                 self:DrawKillLocation(i, krw_x, prw_y + OFFSET, krw_z)
             end
         end
     end
 
     local duration = GetGameTimeSeconds() - now
-    df('Close battle updated in %.1f us', duration * 1000000)
+    -- df('Close battle updated in %.1f us', duration * 1000000)
 end
 
 -- local PointToPlayer = LibImplex.System(
@@ -145,7 +138,9 @@ function addon:StartListening()
 end
 
 function addon:StopListening()
-    EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_KILL_LOCATIONS_UPDATED)
+    EVENT_MANAGER:UnregisterForEvent(EVENT_NAMESPACE, EVENT_KILL_LOCATIONS_UPDATED)
+    EVENT_MANAGER:UnregisterForUpdate(EVENT_NAMESPACE)
+    EVENT_MANAGER:UnregisterForUpdate(EVENT_NAMESPACE..'Periodical Update')
 end
 
 -- ----------------------------------------------------------------------------
