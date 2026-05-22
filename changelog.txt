@@ -1,3 +1,6 @@
+1.7.3
+- "OnMapShown" callback now correctly enabled in Cyrodiil and IC only (resolves error killlocations/main.lua:467)
+
 1.7.2
 - Visual adjustments to kill location history pins
 - Dependencies bump

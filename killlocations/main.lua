@@ -191,11 +191,11 @@ function addon:Initialize(sv)
 	end
 	--]]
 
-	WORLD_MAP_SCENE:RegisterCallback('StateChange', function(oldState, newState)
+	self.onWorldMapSceneShown = function(oldState, newState)
         if newState == SCENE_SHOWING then
             self:OnWorldMapSceneShown()
         end
-    end)
+	end
 
 	self.MIN_SIZE_TO_DISPLAY = 3
 end
@@ -285,6 +285,7 @@ function addon:StartListening()
 	EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_KILL_LOCATIONS_UPDATED, function() self:OnKillLocationsUpdate() end)
 
 	CALLBACK_MANAGER:RegisterCallback('OnWorldMapChanged', self.onWorldMapChangedCallback)
+	WORLD_MAP_SCENE:RegisterCallback('StateChange', self.onWorldMapSceneShown)
 end
 
 function addon:StopListening()
@@ -292,6 +293,7 @@ function addon:StopListening()
 	self.listening = false
 
 	CALLBACK_MANAGER:UnregisterCallback('OnWorldMapChanged', self.onWorldMapChangedCallback)
+	WORLD_MAP_SCENE:UnregisterCallback('StateChange', self.onWorldMapSceneShown)
 	-- self.campaignId = nil
 end
 
