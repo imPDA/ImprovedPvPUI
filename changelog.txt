@@ -1,3 +1,9 @@
+1.7.4
+- Some final polishing for kill locations history pins
+- Blurry pin size increased to match custom one
+- Added checkbox in map filters to turn history pins on and off
+- 'Close Battle' test feature removed
+
 1.7.3
 - "OnMapShown" callback now correctly enabled in Cyrodiil and IC only (resolves error killlocations/main.lua:467)
 

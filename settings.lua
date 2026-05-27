@@ -288,9 +288,15 @@ DE (Arboretum) - Same as "Ingame Default," but "Baumgartenbezirk" is replaced wi
         type = 'iconpicker',
         name = 'Map Pin Texture',
         choices = {
-            'EsoUI/Art/Miscellaneous/Gamepad/gp_bullet.dds',
+            -- 'EsoUI/Art/Miscellaneous/Gamepad/gp_bullet.dds',
+            'ImprovedPvPUI/killlocations/bullet.dds',
 	        'ImprovedPvPUI/killlocations/diamond.dds',
 	        'ImprovedPvPUI/killlocations/star.dds',
+        },
+        choicesTooltips = {
+            'Blurry diamond (default ESO small resolution icon)',
+            'Diamond (custom with higher resolution)',
+            'Star (custom with higher resolution)',
         },
         getFunc = function() return klhsv.pinTexture end,
         setFunc = function(texturePath)
@@ -304,24 +310,6 @@ DE (Arboretum) - Same as "Ingame Default," but "Baumgartenbezirk" is replaced wi
         name = 'Kill Locations History',
         tooltip = 'Shows pins on map of disappeared kill locations in Cyro and IC and prints info in chat',
         controls = klh,
-    }
-
-    local cb = {}
-    local cbsv = sv.closeBattle
-
-    cb[#cb+1] = {
-		type = 'checkbox',
-		name = 'Enable',
-		getFunc = function() return cbsv.enabled end,
-		setFunc = function(value) cbsv.enabled = value end,
-        requiresReload = true,
-	}
-
-    optionsData[#optionsData+1] = {
-        type = 'submenu',
-        name = 'Close Battle',
-        tooltip = 'Shows close battle kills in 3D (kills of all factions)',
-        controls = cb,
     }
 
     LAM:RegisterOptionControls(settingsName, optionsData)
