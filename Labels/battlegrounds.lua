@@ -255,6 +255,10 @@ local function OnPlayerActivated()
 
     Log('Team: %d', team)
 
+    if not ZONES[zoneId] or ZONES[zoneId][team] then
+        Log('No data for zoneId %d team %d', zoneId, team)
+        return
+    end
     position, orientation = unpack(ZONES[zoneId][team])
 
     local balltegroundZone = position ~= nil

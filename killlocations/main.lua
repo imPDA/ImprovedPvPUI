@@ -1,3 +1,4 @@
+-- local Log = IMP_PVP_UI_Logger('KillLocations')
 local EVENT_NAMESPACE = 'EVENT_NAMESPACE_IMP_PVP_UI_KillLocations'
 
 local sqrt = math.sqrt
@@ -132,12 +133,13 @@ function addon:Initialize(sv)
 	self.listening = false
 
 	self.onWorldMapChangedCallback = function()
-		-- df('OnWorldMapChangedCallback')
+		-- Log\('OnWorldMapChangedCallback')
 		self:UpdateCalibration()
 		self:UpdateMap()
 	end
 
 	EVENT_MANAGER:RegisterForEvent(EVENT_NAMESPACE, EVENT_PLAYER_ACTIVATED, function()
+		-- Log\('Player initialized')
 		local zoneId = GetZoneId(GetUnitZoneIndex('player'))
 		local zoneChanged = self.currentZoneId ~= zoneId
 		self.currentZoneId = zoneId
@@ -145,6 +147,8 @@ function addon:Initialize(sv)
 		self.mainCalibration = MAIN_CALIBRATIONS[self.currentZoneId]
 
 		if self:IsCampaignChanged() or zoneChanged then
+			-- Log\('Campaign/zone changed')
+
 			ZO_ClearTable(self.buffer)
 			ZO_ClearTable(self.historyBuffer)
 			self:UpdateMap()
@@ -188,14 +192,14 @@ function addon:Initialize(sv)
 		composite:GetHandler('OnMouseExit')(composite)
 	end)
 
-	composite:SetHandler('OnEffectivelyShown', function()
+	self.onCompositeShown = function()
 		self:OnCompositeShown()
-	end)
+	end
 
-	local perfMeter = CreateControlFromVirtual('$(parent)PerformanceMeter', composite, 'IMP_KillLocations_PerformanceMeterTemplate')
+	-- local perfMeter = CreateControlFromVirtual('$(parent)PerformanceMeter', composite, 'IMP_KillLocations_PerformanceMeterTemplate')
+	-- self.perfMeter = perfMeter
 
 	self.map = map
-	self.perfMeter = perfMeter
 
 	--[[
 	local original = self.GetKillLocations
@@ -289,16 +293,18 @@ function addon:InitializeTooltip()
 
 	ZO_PostHook(WORLD_MAP_MANAGER, 'UpdateMouseoverTooltips', anchorTooltip)
 
-	self.OnMouseEnter = function(tag)
+	self.OnMouseEnter = function(tag, surface)
 		-- local tag = self.map.surfaces[surface].tag  -- TODO: a mess...
 		historyPinsMouseOver[tag] = self.historyBuffer[tag]
 		UpdateTooltip()
+		self.map:AnimateScale(surface, 1, 1.3, 150)
 	end
 
-	self.OnMouseExit = function(tag)
+	self.OnMouseExit = function(tag, surface)
 		-- local tag = self.map.surfaces[surface].tag
 		historyPinsMouseOver[tag] = nil
 		UpdateTooltip()
+		self.map:AnimateScale(surface, 1.3, 1, 150)
 	end
 end
 
@@ -313,6 +319,8 @@ function addon:StartListening()
 	CALLBACK_MANAGER:RegisterCallback('OnWorldMapChanged', self.onWorldMapChangedCallback)
 	WORLD_MAP_SCENE:RegisterCallback('StateChange', self.onWorldMapSceneShown)
 
+	self.map.composite:SetHandler('OnEffectivelyShown', self.onCompositeShown)
+
 	self:OnKillLocationsUpdate()
 end
 
@@ -323,6 +331,9 @@ function addon:StopListening()
 	CALLBACK_MANAGER:UnregisterCallback('OnWorldMapChanged', self.onWorldMapChangedCallback)
 	WORLD_MAP_SCENE:UnregisterCallback('StateChange', self.onWorldMapSceneShown)
 	-- self.campaignId = nil
+
+	self.map.composite:SetHandler('OnEffectivelyShown', nil)
+	self.map:Clear()
 end
 
 function addon:IsCampaignChanged()
@@ -353,6 +364,7 @@ local PIN_TYPE = 4
 local TIMESTAMP = 5
 
 function addon:OnKillLocationsUpdate()
+	-- Log\('OnKillLocationsUpdate')
 	local start = GetGameTimeSeconds()
 
 	local killLocations = self:GetKillLocations()
@@ -391,7 +403,7 @@ function addon:OnKillLocationsUpdate()
 	end
 
 	local duraion = GetGameTimeSeconds() - start
-	self.perfMeter:SetText(('Kill locations update ~%.1f us'):format(duraion * 1000000))
+	-- self.perfMeter:SetText(('Kill locations update ~%.1f us'):format(duraion * 1000000))
 	GLOBAL_IMP_METRIC_KILL_LOCATIONS_UPDATE_TIME = duraion
 
 	self:UpdateMap()
@@ -459,12 +471,12 @@ local function _sum3(tbl)
 end
 
 function addon:OnWorldMapSceneShown()
-	-- df('World map is showing')
+	-- Log\('World map is showing')
 	self:UpdateMap()
 end
 
 function addon:OnCompositeShown()
-	-- df('Composite is showing')
+	-- Log\('Composite is showing')
 	self:UpdateMap()
 end
 
@@ -482,24 +494,25 @@ local function _getKillLocationSize(kills)
 end
 
 function addon:UpdateMap()
+	-- Log\('UpdateMap called')
 	if WORLD_MAP_SCENE:IsHiding() then
 		self.mapIsDirty = true
-		-- df('Map is hidden, don\'t update map')
+		-- Log\('Map is hidden, don\'t update mapd')
 		return
 	end
 
 	if self.map.composite:IsHidden() then
 		self.mapIsDirty = true
-		-- df('Map is hidden by filter, don\'t update map')
+		-- Log\('Map is hidden by filter, don\'t update map')
 		return
 	end
 
 	if not self.mapIsDirty then
-		-- df('Map isn\'t  dirty, don\'t update map')
+		-- Log\('Map isn\'t  dirty, don\'t update map')
 		return
 	end
 
-	-- df('Map is going to be updated')
+	-- Log\('Map is going to be updated')
 
 	local map = self.map
 	local historyBuffer = self.historyBuffer

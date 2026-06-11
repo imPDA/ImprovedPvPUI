@@ -1,3 +1,7 @@
+1.7.5
+- Bugfix for Kill Location history: should not produce errors outside of PvP zones anymore
+- Bugfix for Battleground Labels: 4vs4vs4 maps will not produce errors anymore
+
 1.7.4
 - Some final polishing for kill locations history pins
 - Blurry pin size increased to match custom one
