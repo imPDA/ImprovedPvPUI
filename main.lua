@@ -1,7 +1,7 @@
 local addon = {}
 addon.name = 'ImprovedPvPUI'
 addon.displayName = '|c7c42f2Imp|ceeeeee-roved PvP UI|r'
-addon.version = '1.7.5'
+addon.version = '1.7.6'
 
 local Log = IMP_PVP_UI_Logger('IMP_PVP_UI_MAIN')
 
@@ -49,6 +49,7 @@ local DEFAULTS = {
 		pinColor = {0, 0.75, 1},  -- {0.925, 0.592, 0.024}
 		retention = 300,
 		pinTexture = 'ImprovedPvPUI/killlocations/star.dds',
+		pinScale = 1,
 	},
 }
 
@@ -130,6 +131,8 @@ function addon:OnLoad()
 		IMP_KLH_Initialize(sv.killLocationsHistory)
 	end
 
+	-- IMP_KeepTracker_Initialize({})
+
 	-- TODO: return when IngamBugreport will be published as a standalone addon
 	-- if IMP_IngameBugreports then
 	-- 	local function callback(error)
@@ -138,6 +141,43 @@ function addon:OnLoad()
 
 	-- 	IMP_IngameBugreports:Subscribe(self.name, '@imPDA', callback, function() end)
 	-- end
+
+	ZO_UnitFrames:UnregisterForEvent(EVENT_RETICLE_TARGET_CHANGED)
+
+	local function replaceNames()
+		local db = PVP_Alerts_Main_Table.SV.playersDB
+
+		local function find(characterName)
+			if db[characterName..'^Mx'] then
+				return db[characterName..'^Mx'].unitAccName
+			end
+
+			if db[characterName..'^Fx'] then
+				return db[characterName..'^Fx'].unitAccName
+			end
+		end
+
+		local scrollControl = CombatMetrics_Report_UnitPanelPanelScrollChild
+		for i = 1, scrollControl:GetNumChildren() do
+			local row = scrollControl:GetChild(i)
+			local nameControl = row:GetNamedChild('Name')
+			local name = nameControl:GetText()
+			local unitId, characterName = name:match('^%((%d+)%)%s*(.*)$')
+
+			local displayName = find(characterName)
+			if displayName then
+				nameControl:SetText(('(%d) %s'):format(unitId, displayName))
+			end
+		end
+	end
+
+	local myControl = WINDOW_MANAGER:CreateControl('$(parent)ReplaceNames', CombatMetrics_Report, CT_TEXTURE)
+
+	myControl:SetDimensions(64, 64)
+	myControl:SetAnchor(BOTTOMRIGHT, nil, BOTTOMLEFT, -4, 0)
+	myControl:SetColor(0, 1, 0)
+	myControl:SetMouseEnabled(true)
+	myControl:SetHandler('OnMouseDown', replaceNames)
 end
 
 local function OnAddonLoaded(_, addonName)

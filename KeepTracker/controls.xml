@@ -1,0 +1,49 @@
+<GuiXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sir.insidi.at/or/schema/esoui.xsd">
+	<Controls>
+        <Control name="IMP_IPU_KT_RowTemplate" resizeToFitDescendents="true" virtual="true">
+            <Dimensions y="30" />
+            <Controls>
+                <!-- <Texture name="$(parent)Icon" textureFile="EsoUI/Art/Campaign/Gamepad/gp_overview_keepIcon.dds">
+                    <Dimensions x="32" y="32" />
+                    <Anchor point="LEFT" />
+                </Texture> -->
+                <Texture name="$(parent)Background" excludeFromResizeToFitExtents="true">
+                    <AnchorFill />
+                </Texture>
+
+                <TextureComposite name="$(parent)CompositeIcon" textureFile="ImprovedPvPUI/icons/atlas.dds" pixelRoundingEnabled="false">
+                    <Dimensions x="32" y="32" />
+                    <Anchor point="LEFT" />
+                </TextureComposite>
+                <Label name="$(parent)KeepName" font="ZoFontGamepad22" text="Black Boot Castle">
+                    <Dimensions x="170" y="24" />
+                    <Anchor point="LEFT" relativeTo="$(parent)CompositeIcon" relativePoint="RIGHT" offsetX="2" />
+                </Label>
+                <Label name="$(parent)Sieges" font="ZoFontGamepadBold22" horizontalAlignment="CENTER" text="30 / 30 / 30">
+                    <Dimensions x="100" y="24" />
+                    <Anchor point="LEFT" relativeTo="$(parent)KeepName" relativePoint="RIGHT" offsetX="32" />
+                </Label>
+                <Label name="$(parent)Timer" font="ZoFontGamepad22" horizontalAlignment="LEFT" text="15:41">
+                    <Dimensions x="80" y="24" />
+                    <Anchor point="LEFT" relativeTo="$(parent)Sieges" relativePoint="RIGHT" offsetX="48" />
+                </Label>
+                <!-- <Label name="$(parent)SiegesEP" font="ZoFontGamepadBold22" horizontalAlignment="CENTER" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_EBONHEART_PACT" text="30">
+                    <Dimensions x="36" y="24" />
+                    <Anchor point="LEFT" relativeTo="$(parent)SiegesAD" relativePoint="RIGHT" offsetX="8" />
+                </Label>
+                <Label name="$(parent)SiegesDC" font="ZoFontGamepadBold22" horizontalAlignment="CENTER" color="INTERFACE_COLOR_TYPE_ALLIANCE:ALLIANCE_DAGGERFALL_COVENANT" text="30">
+                    <Dimensions x="36" y="24" />
+                    <Anchor point="LEFT" relativeTo="$(parent)SiegesEP" relativePoint="RIGHT" offsetX="8" />
+                </Label> -->
+            </Controls>
+        </Control>
+
+        <TopLevelControl name="IMP_IPU_KT_TLC" resizeToFitDescendents="true" mouseEnabled="true" movable="true">
+            <!-- <DimensionConstraints minX="50" minY="50" /> -->
+            <Anchor point="TOPLEFT" offsetX="100" offsetY="100" />
+            <Controls>
+                <!-- <Backdrop name="$(parent)Background" inherits="ZO_DefaultBackdrop_Gamepad" excludeFromResizeToFitExtents="true"/> -->
+            </Controls>
+        </TopLevelControl>
+	</Controls>
+</GuiXml>

@@ -1,3 +1,9 @@
+1.7.6
+- Updated to follow latest library versions
+- Bugfixes
+- New settings "scale" for kill history pins
+- Added sorting for kill history pins (latest first)
+
 1.7.5
 - Bugfix for Kill Location history: should not produce errors outside of PvP zones anymore
 - Bugfix for Battleground Labels: 4vs4vs4 maps will not produce errors anymore
@@ -18,7 +24,7 @@
 
 1.7.1
 - Reworked Kill Locations History module
-- Added test feature 'Close Battle' showing 3D text with alliance kills above nearest battles 
+- Added test feature 'Close Battle' showing 3D text with alliance kills above nearest battles
 
 1.7.0
 - Added new module - Kill Locations History - it helps to keep track of battles across Cyro and IC
